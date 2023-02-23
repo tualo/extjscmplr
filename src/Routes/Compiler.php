@@ -13,10 +13,9 @@ class Read implements IRoute{
         BasicRoute::add('/compiler',function($matches){
 
             $db = App::get('session')->getDB();
-            $tablename = $matches['tablename'];
             $db->direct('SET SESSION group_concat_max_len = 4294967295;');
             try{
-                App::result('data', __DIR__);
+                App::result('data', dirname(__DIR__,5));
                 App::result('success', true);
             }catch(\Exception $e){
                 App::result('msg', $e->getMessage());

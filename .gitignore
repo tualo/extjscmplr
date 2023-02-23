@@ -1,0 +1,6 @@
+/build
+compiler_source
+bootstrap.*
+classic.json*
+modern.json*
+.sencha

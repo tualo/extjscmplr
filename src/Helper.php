@@ -31,6 +31,7 @@ class Helper {
                     }
                 }
                 $allfiles[]=[
+                    'toolkit'=>'classic',
                     'modul'=>basename((dirname($filename))),
                     'files'=>$l
                 ];

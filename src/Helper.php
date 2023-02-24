@@ -38,5 +38,6 @@ class Helper {
             }
         }catch(\Exception $e){
         }
+        return $allfiles;
     }
 }

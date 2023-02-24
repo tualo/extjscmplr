@@ -15,11 +15,11 @@ class Helper {
         $files=array_merge($files,self::getOldFashioned());
         return $files;
     }
-    
+
     public static function getOldFashioned() {
         try{
             $allfiles = [];
-            foreach (glob(dirname(__DIR__,5).'/cmp/*/compile.json') as $filename) {
+            foreach (glob(dirname(__DIR__,4).'/cmp/*/compile.json') as $filename) {
                 $list = json_decode(file_get_contents($filename),true);
                 if (!is_array($list)) continue;
                 $l = [];

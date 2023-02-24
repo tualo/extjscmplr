@@ -40,4 +40,63 @@ class Helper {
         }
         return $allfiles;
     }
+
+
+    public static function compile($config) {
+        if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
+        if (!isset($config['sencha_compiler_source'])) throw new \Exception("sencha_compiler_source not defined");
+
+        $params = [$config['sencha_compiler_command']];
+        $params[] = 'build';
+        if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
+
+        $files = self::getFiles();
+        $path = implode('/',[
+            $config['sencha_compiler_source'],
+            'classic',
+            'system'
+        ]);
+        if (!file_exists( $path )){ mkdir($path,0777,true); }
+        foreach($files as $fileItem){
+            if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='classic') ){
+                if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
+                foreach($fileItem['files'] as $file){
+                    copy( $file, $path.'/'.$fileItem['modul'].basename($file) );
+                }
+            }
+        }
+
+        $path = implode('/',[
+            $config['sencha_compiler_source'],
+            'modern',
+            'system'
+        ]);
+        if (!file_exists( $path )){ mkdir($path,0777,true); }
+        foreach($files as $fileItem){
+            if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='modern') ){
+                if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
+                foreach($fileItem['files'] as $file){
+                    copy( $file, $path.'/'.$fileItem['modul'].basename($file) );
+                }
+            }
+        }
+
+        $path = implode('/',[
+            $config['sencha_compiler_source'],
+            'system'
+        ]);
+        if (!file_exists( $path )){ mkdir($path,0777,true); }
+        foreach($files as $fileItem){
+            if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='') ){
+                if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
+                foreach($fileItem['files'] as $file){
+                    copy( $file, $path.'/'.$fileItem['modul'].basename($file) );
+                }
+            }
+        }
+
+        chdir($config['sencha_compiler_source']);
+        exec(implode(' ',$params),$result);
+        print_r($result);
+    }
 }

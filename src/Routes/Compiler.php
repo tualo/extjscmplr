@@ -10,6 +10,11 @@ use Tualo\Office\ExtJSCompiler\Helper;
 class Read implements IRoute{
 
     public static function register(){
+        BasicRoute::add('/compiler_files',function($matches){
+            $compiler_config = (App::get('configuration'))['ext-compiler'];
+            App::result('compile', Helper::getFiles($compiler_config ));
+        },['get','post'],true);
+
         BasicRoute::add('/compiler',function($matches){
             if (isset((App::get('configuration'))['ext-compiler'])){
                 $compiler_config = (App::get('configuration'))['ext-compiler'];
@@ -21,11 +26,7 @@ class Read implements IRoute{
                     App::result('msg', $e->getMessage());
                 }
             }
-            // $compiler_config = (App::get('configuration'))['ext-compiler'];
-            // /Users/thomashoffmann/Documents/Projects/php/tualo/extjscmplr/compiler_source/Tualo/classic/src/view/main/List.js
-            // $db = App::get('session')->getDB();
-            // $db->direct('SET SESSION group_concat_max_len = 4294967295;');
-            // App::contenttype('application/json');
+            App::contenttype('application/json');
         },['get','post'],true);
     }
 }

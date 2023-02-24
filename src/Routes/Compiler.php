@@ -15,7 +15,7 @@ class Read implements IRoute{
                 $compiler_config = (App::get('configuration'))['ext-compiler'];
                 try{
                     //App::result('compiler_config', $compiler_config);
-                    App::result('compile', Helper::compile());
+                    App::result('compile', Helper::compile($compiler_config ));
                     App::result('success', true);
                 }catch(\Exception $e){
                     App::result('msg', $e->getMessage());

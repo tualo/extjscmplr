@@ -57,6 +57,8 @@ class Helper {
             'system'
         ]);
         if (!file_exists( $path )){ mkdir($path,0777,true); }
+        array_map('unlink', glob($path."/*"));
+
         foreach($files as $fileItem){
             if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='classic') ){
                 if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
@@ -72,6 +74,7 @@ class Helper {
             'system'
         ]);
         if (!file_exists( $path )){ mkdir($path,0777,true); }
+        array_map('unlink', glob($path."/*"));
         foreach($files as $fileItem){
             if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='modern') ){
                 if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
@@ -86,6 +89,7 @@ class Helper {
             'system'
         ]);
         if (!file_exists( $path )){ mkdir($path,0777,true); }
+        array_map('unlink', glob($path."/*"));
         foreach($files as $fileItem){
             if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='') ){
                 if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }

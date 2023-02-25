@@ -3,6 +3,14 @@ namespace Tualo\Office\ExtJSCompiler;
 
 class Helper {
 
+    public static function delTree($dir) {
+        $files = array_diff(scandir($dir), array('.','..'));
+        foreach ($files as $file) {
+            (is_dir("$dir/$file")) ? self::delTree("$dir/$file") : unlink("$dir/$file");
+        }
+        return rmdir($dir);
+    }
+
     public static function getFiles(){
         $files=[];
         $classes = get_declared_classes();
@@ -57,6 +65,7 @@ class Helper {
             'system'
         ]);
         if (!file_exists( $path )){ mkdir($path,0777,true); }
+        self::delTree($path);
         //array_map('unlink', glob($path."/*"));
 
         foreach($files as $fileItem){
@@ -64,7 +73,7 @@ class Helper {
                 if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
                 foreach($fileItem['files'] as $file){
                     if (file_exists($file))
-                    copy( $file, $path.'/'.$fileItem['modul'].basename($file) );
+                    copy( $file, $path.'/'.$fileItem['modul'].'/'.basename($file) );
                 }
             }
         }
@@ -75,13 +84,14 @@ class Helper {
             'system'
         ]);
         if (!file_exists( $path )){ mkdir($path,0777,true); }
+        self::delTree($path);
         //array_map('unlink', glob($path."/*"));
         foreach($files as $fileItem){
             if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='modern') ){
                 if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
                 foreach($fileItem['files'] as $file){
                     if (file_exists($file))
-                    copy( $file, $path.'/'.$fileItem['modul'].basename($file) );
+                    copy( $file, $path.'/'.$fileItem['modul'].'/'.basename($file) );
                 }
             }
         }
@@ -91,13 +101,14 @@ class Helper {
             'system'
         ]);
         if (!file_exists( $path )){ mkdir($path,0777,true); }
+        self::delTree($path);
         //array_map('unlink', glob($path."/*"));
         foreach($files as $fileItem){
             if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='') ){
                 if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
                 foreach($fileItem['files'] as $file){
                     if (file_exists($file))
-                    copy( $file, $path.'/'.$fileItem['modul'].basename($file) );
+                    copy( $file, $path.'/'.$fileItem['modul'].'/'.basename($file) );
                 }
             }
         }

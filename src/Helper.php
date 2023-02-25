@@ -62,6 +62,7 @@ class Helper {
         $path = implode('/',[
             $config['sencha_compiler_source'],
             'classic',
+            'src',
             'system'
         ]);
         if (!file_exists( $path )){ mkdir($path,0777,true); }
@@ -81,6 +82,7 @@ class Helper {
         $path = implode('/',[
             $config['sencha_compiler_source'],
             'modern',
+            'src',
             'system'
         ]);
         if (!file_exists( $path )){ mkdir($path,0777,true); }

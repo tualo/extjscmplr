@@ -104,9 +104,16 @@ class Helper {
 
         chdir($config['sencha_compiler_source']);
         exec(implode(' ',$params),$result,$return_code);
+        $data = [];
+        foreach($result as $row){
+            
+            preg_match('/(?P<level>\[(\w+)\])\s(?P<note>.+)/', '$row', $matches, PREG_OFFSET_CAPTURE);
+            $data[] = $matches;
+        }
         return [
             'return_code'=>$return_code,
-            'result'=>($result)
+            'result'=>($result),
+            'data'=>($data)
         ];
     }
 }

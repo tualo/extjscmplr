@@ -103,7 +103,10 @@ class Helper {
         }
 
         chdir($config['sencha_compiler_source']);
-        exec(implode(' ',$params),$result);
-        print_r($result);
+        exec(implode(' ',$params),$result,$return_code);
+        return [
+            'return_code'=>$return_code,
+            'result'=>($result)
+        ];
     }
 }

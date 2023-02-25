@@ -105,18 +105,20 @@ class Helper {
         chdir($config['sencha_compiler_source']);
         exec(implode(' ',$params),$result,$return_code);
         $data = [];
+        $index = 0;
         foreach($result as $row){
             
             preg_match('/(?P<level>\[(\w+)\])\s(?P<note>.+)/', $row, $matches, PREG_OFFSET_CAPTURE);
             if (isset($matches['note'])&&isset($matches['level']))
             $data[] = [
-                'note'=>$matches['note'][0],
+                'index'=>$index++,
+                'note'=>str_replace($config['sencha_compiler_source'],'.',$matches['note'][0]),
                 'level'=>$matches['level'][0]
             ];
         }
         return [
             'return_code'=>$return_code,
-            'result'=>($result),
+            // 'result'=>($result),
             'data'=>($data)
         ];
     }

@@ -107,8 +107,12 @@ class Helper {
         $data = [];
         foreach($result as $row){
             
-            preg_match('/(?P<level>\[(\w+)\])\s(?P<note>.+)/', '$row', $matches, PREG_OFFSET_CAPTURE);
-            $data[] = $matches;
+            preg_match('/(?P<level>\[(\w+)\])\s(?P<note>.+)/', $row, $matches, PREG_OFFSET_CAPTURE);
+            if (isset($matches['note'])&&isset($matches['level']))
+            $data[] = [
+                'note'=>$matches['note'][0],
+                'level'=>$matches['level'][0]
+            ];
         }
         return [
             'return_code'=>$return_code,

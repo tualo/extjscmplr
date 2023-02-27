@@ -21,7 +21,7 @@ class Read implements IRoute{
                 $compiler_config = (App::get('configuration'))['ext-compiler'];
                 try{
                     //App::result('compiler_config', $compiler_config);
-                    App::result('compile', Helper::compile($compiler_config ));
+                    App::result('compile', Helper::compile($compiler_config, $client ));
                     App::result('success', true);
                 }catch(\Exception $e){
                     App::result('msg', $e->getMessage());
@@ -33,13 +33,33 @@ class Read implements IRoute{
 
 
         BasicRoute::add('/app.js',function($matches){
+
+            $compiler_config = (App::get('configuration'))['ext-compiler'];
+            Helper::compile( $compiler_config );
+
             $source = dirname( (App::get('configuration'))['ext-compiler']['sencha_compiler_source'] );
-            $_SESSION['']
-            if (file_exists($source.'/'.$client.'/app.js')){ 
-                readfile($source.'/'.$client.'/app.js'); exit(); 
-            }else{
-                readfile($source.'/default/app.js'); exit(); 
+            /*
+            $_SESSION['tualoapplication']['loggedIn'] = true;
+            $_SESSION['tualoapplication']['typ'] = $_SESSION['typ'];
+            $_SESSION['tualoapplication']['username'] = $_SESSION['username'];
+            $_SESSION['tualoapplication']['fullname'] = $_SESSION['fullname'];
+            $_SESSION['tualoapplication']['client'] = (isset($_SESSION['dbname'])?$_SESSION['dbname']:$_SESSION['client']);
+            $_SESSION['tualoapplication']['clients'] = $this->db->direct('SELECT macc_users_clients.client FROM macc_users_clients join view_macc_clients on macc_users_clients.client = view_macc_clients.id WHERE macc_users_clients.login = {username}',$_SESSION['tualoapplication']);
+            */
+            $client='default';
+            if (
+                isset($_SESSION['tualoapplication']) &&
+                isset($_SESSION['tualoapplication']['loggedIn']) &&
+                $_SESSION['tualoapplication']['loggedIn'] === true
+            ){
+                $client = $_SESSION['tualoapplication']['client'];
             }
+
+            if (!file_exists($source.'/'.$client.'/app.js')){
+                Helper::compile($compiler_config )
+            }
+            readfile($source.'/default/app.js'); exit(); 
+            
         },['get'],true);
 
         BasicRoute::add('/classic.json',function($matches){

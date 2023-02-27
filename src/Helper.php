@@ -71,77 +71,45 @@ class Helper {
     }
 
 
-    public static function compile($config) {
+    public static function compile($config, $client) {
         if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
         if (!isset($config['sencha_compiler_source'])) throw new \Exception("sencha_compiler_source not defined");
 
+        $files = self::getFiles();
+        $toolkits = ['classic','modern',''];
+
+        foreach($toolkits as $toolkit){
+            $path = implode('/',[
+                dirname($config['sencha_compiler_source']),
+                $client,
+                (($toolkit=='')?'both':$toolkit),
+                'src',
+                'system'
+            ]);
+            if (!file_exists( $path )){ mkdir($path,0777,true); }
+            self::delTree($path);
+            foreach($files as $fileItem){
+                if (isset($fileItem['toolkit']) && ($fileItem['toolkit']==$toolkit) ){
+                    if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
+                    foreach($fileItem['files'] as $filelistitem){
+                        if (file_exists($filelistitem['file'])){
+                            if (!file_exists( $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath']) ){ mkdir($path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'],0777,true); }
+                            copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
+                        }
+                    }
+                }
+            }
+    
+
+        }
+
+
+        chdir($config['sencha_compiler_source']);
         $params = [$config['sencha_compiler_command']];
         $params[] = 'build';
         if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
-
-        $files = self::getFiles();
-        $path = implode('/',[
-            $config['sencha_compiler_source'],
-            'classic',
-            'src',
-            'system'
-        ]);
-        if (!file_exists( $path )){ mkdir($path,0777,true); }
-        self::delTree($path);
-        //array_map('unlink', glob($path."/*"));
-
-        foreach($files as $fileItem){
-            if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='classic') ){
-                if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
-                foreach($fileItem['files'] as $filelistitem){
-                    if (file_exists($filelistitem['file'])){
-                        if (!file_exists( $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath']) ){ mkdir($path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'],0777,true); }
-                        copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
-                    }
-                }
-            }
-        }
-
-        $path = implode('/',[
-            $config['sencha_compiler_source'],
-            'modern',
-            'src',
-            'system'
-        ]);
-        if (!file_exists( $path )){ mkdir($path,0777,true); }
-        self::delTree($path);
-        //array_map('unlink', glob($path."/*"));
-        foreach($files as $fileItem){
-            if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='modern') ){
-                if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
-                foreach($fileItem['files'] as $file){
-                    if (file_exists($filelistitem['file'])){
-                        if (!file_exists( $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath']) ){ mkdir($path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'],0777,true); }
-                        copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
-                    }
-                }
-            }
-        }
-
-        $path = implode('/',[
-            $config['sencha_compiler_source'],
-            'system'
-        ]);
-        if (!file_exists( $path )){ mkdir($path,0777,true); }
-        self::delTree($path);
-        //array_map('unlink', glob($path."/*"));
-        foreach($files as $fileItem){
-            if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='') ){
-                if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
-                foreach($fileItem['files'] as $file){
-                    if (file_exists($file))
-                    copy( $file, $path.'/'.$fileItem['modul'].'/'.basename($file) );
-                }
-            }
-        }
-
-        chdir($config['sencha_compiler_source']);
         exec(implode(' ',$params),$result,$return_code);
+
         $data = [];
         $index = 0;
         foreach($result as $row){

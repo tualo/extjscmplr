@@ -29,5 +29,24 @@ class Read implements IRoute{
             }
             App::contenttype('application/json');
         },['get','post'],true);
+
+
+
+        BasicRoute::add('/app.js',function($matches){
+            $source = dirname( (App::get('configuration'))['ext-compiler']['sencha_compiler_source'] );
+            $_SESSION['']
+            if (file_exists($source.'/'.$client.'/app.js')){ 
+                readfile($source.'/'.$client.'/app.js'); exit(); 
+            }else{
+                readfile($source.'/default/app.js'); exit(); 
+            }
+        },['get'],true);
+
+        BasicRoute::add('/classic.json',function($matches){
+            /*$compiler_config = (App::get('configuration'))['ext-compiler'];
+            App::result('compile', Helper::getFiles($compiler_config ));
+            App::contenttype('application/json');
+            */
+        },['get'],true);
     }
 }

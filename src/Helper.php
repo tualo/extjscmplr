@@ -20,7 +20,7 @@ class Helper {
                 $files=array_merge($files,$cls::getFiles());
             }
         }
-        $files=array_merge($files,self::getOldFashioned());
+        //$files=array_merge($files,self::getOldFashioned());
         return $files;
     }
 
@@ -48,7 +48,7 @@ class Helper {
                     }else{
                         $l[] = [ 
                             'file'=>dirname($filename).'/'.$entry,
-                            'subpath'=>dirname($entry[0]),
+                            'subpath'=>dirname($entry),
                             'prio'=>sprintf('%06d',99999).sprintf('%06d',$localindex++)
                         ];
                     }

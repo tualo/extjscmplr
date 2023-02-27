@@ -61,7 +61,7 @@ class Helper {
                 ];
             }
 
-            usort($allfiles,'Helper::cmp_tualo_file_sort');
+            usort($allfiles,'Tualo\Office\ExtJSCompiler\Helper::cmp_tualo_file_sort');
 
         }catch(\Exception $e){
         }

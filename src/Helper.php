@@ -42,11 +42,13 @@ class Helper {
                     if (is_array($entry)){
                         $l[]=[ 
                                 'file'=>dirname($filename).'/'.$entry[0],
+                                'subpath'=>dirname($entry[0]),
                                 'prio'=>sprintf('%06d',intval($entry[1])).sprintf('%06d',$localindex++)
                         ];
                     }else{
                         $l[] = [ 
                             'file'=>dirname($filename).'/'.$entry,
+                            'subpath'=>dirname($entry[0]),
                             'prio'=>sprintf('%06d',99999).sprintf('%06d',$localindex++)
                         ];
                     }

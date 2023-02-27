@@ -91,9 +91,9 @@ class Helper {
         foreach($files as $fileItem){
             if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='classic') ){
                 if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
-                foreach($fileItem['files'] as $file){
-                    if (file_exists($file))
-                    copy( $file, $path.'/'.$fileItem['modul'].'/'.basename($file) );
+                foreach($fileItem['files'] as $filelistitem){
+                    if (file_exists($filelistitem['file']))
+                    copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].'/'.basename($filelistitem['file']) );
                 }
             }
         }

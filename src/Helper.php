@@ -46,7 +46,7 @@ class Helper {
                         ];
                     }else{
                         $l[] = [ 
-                            'file'=>dirname($filename).'/'.$entry[0],
+                            'file'=>dirname($filename).'/'.$entry,
                             'prio'=>sprintf('%06d',99999).sprintf('%06d',$localindex++)
                         ];
                     }

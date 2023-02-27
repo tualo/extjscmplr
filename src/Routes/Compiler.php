@@ -56,7 +56,7 @@ class Read implements IRoute{
             }
 
             if (!file_exists($source.'/'.$client.'/app.js')){
-                Helper::compile($compiler_config )
+                Helper::compile($compiler_config,$client );
             }
             readfile($source.'/default/app.js'); exit(); 
             

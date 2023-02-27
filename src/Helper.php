@@ -24,26 +24,45 @@ class Helper {
         return $files;
     }
 
+    public static function cmp_tualo_file_sort($a,$b) {
+        if ($a['prio']==$b['prio']) return 0;
+        return ($a['prio']<$b['prio'])?-1:1;
+    }
+    
     public static function getOldFashioned() {
         try{
             $allfiles = [];
+            $localindex=0;
             foreach (glob(dirname(__DIR__,4).'/cmp/*/compile.json') as $filename) {
                 $list = json_decode(file_get_contents($filename),true);
                 if (!is_array($list)) continue;
                 $l = [];
+                $min_prio='999999';
                 foreach($list as $entry){
                     if (is_array($entry)){
-                        $l[] = dirname($filename).'/'.$entry[0];
+                        $l[]=[ 
+                                'file'=>dirname($filename).'/'.$entry[0],
+                                'prio'=>sprintf('%06d',intval($entry[1])).sprintf('%06d',$localindex++)
+                        ];
                     }else{
-                        $l[] = dirname($filename).'/'.$entry;
+                        $l[] = [ 
+                            'file'=>dirname($filename).'/'.$entry[0],
+                            'prio'=>sprintf('%06d',99999).sprintf('%06d',$localindex++)
+                        ];
                     }
+                    $min_prio=min($min_prio,$l[count($l)-1]['prio']);
                 }
+                
                 $allfiles[]=[
                     'toolkit'=>'classic',
                     'modul'=>basename((dirname($filename))),
-                    'files'=>$l
+                    'files'=>$l,
+                    'prio'=>$min_prio
                 ];
             }
+
+            usort($allfiles,'Helper::cmp_tualo_file_sort');
+
         }catch(\Exception $e){
         }
         return $allfiles;

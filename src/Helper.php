@@ -94,8 +94,10 @@ class Helper {
             if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='classic') ){
                 if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
                 foreach($fileItem['files'] as $filelistitem){
-                    if (file_exists($filelistitem['file']))
-                    copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].'/'.basename($filelistitem['file']) );
+                    if (file_exists($filelistitem['file'])){
+                        if (!file_exists( $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath']) ){ mkdir($path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'],0777,true); }
+                        copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
+                    }
                 }
             }
         }
@@ -113,8 +115,10 @@ class Helper {
             if (isset($fileItem['toolkit']) && ($fileItem['toolkit']=='modern') ){
                 if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
                 foreach($fileItem['files'] as $file){
-                    if (file_exists($file))
-                    copy( $file, $path.'/'.$fileItem['modul'].'/'.basename($file) );
+                    if (file_exists($filelistitem['file'])){
+                        if (!file_exists( $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath']) ){ mkdir($path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'],0777,true); }
+                        copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
+                    }
                 }
             }
         }

@@ -75,20 +75,9 @@ class Helper {
         App::logger('compiler')->info('my message');
         foreach($files as $file){
             if($file['subpath']!='')$file['subpath']='/'.$file['subpath'];
-            
-
-            if(
-                ( $file['subpath'] == '/ext') ||
-                (strpos($file['subpath'],'/ext/')===0) 
-            ){
-
-            }else{
-                if (!file_exists( $to.$file['subpath'] )){ mkdir($to.$file['subpath'],0777,true); }
-                copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
-            }
+            if (!file_exists( $to.$file['subpath'] )){ mkdir($to.$file['subpath'],0777,true); }
+            copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
         }
-        symlink($from.'/ext', $to.'/ext');
-        // print_r($files);
     }
 
     public static function compile($config, $client) {

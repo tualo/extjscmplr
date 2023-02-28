@@ -82,10 +82,13 @@ class Helper {
         foreach($files as $file){
             if($file['subpath']!='')$file['subpath']='/'.$file['subpath'];
             if (!file_exists( $to.$file['subpath'] )){ mkdir($to.$file['subpath'],0777,true); }
-            if(strpos($file['subpath'],'ext/')===0){
-                App::logger('compiler')->info('dont copy library' );
+
+            if(
+                ( $file['subpath'] == '/ext') ||
+                (strpos($file['subpath'],'/ext/')===0) 
+            ){
+                
             }else{
-                App::logger('compiler')->info('copy '.$file['subpath'].'/'.basename($file['file'] ));
                 copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
             }
         }

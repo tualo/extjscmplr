@@ -87,11 +87,12 @@ class Helper {
                 ( $file['subpath'] == '/ext') ||
                 (strpos($file['subpath'],'/ext/')===0) 
             ){
-                
+
             }else{
                 copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
             }
         }
+        symlink($from.'/ext', $to.'/ext');
         // print_r($files);
     }
 

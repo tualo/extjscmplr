@@ -5,13 +5,7 @@ use Tualo\Office\ExtJSCompiler\FileHelper;
 
 class Helper {
 
-    public static function delTree($dir) {
-        $files = array_diff(scandir($dir), array('.','..'));
-        foreach ($files as $file) {
-            (is_dir("$dir/$file")&&(!is_link("$dir/$file"))) ? self::delTree("$dir/$file") : unlink("$dir/$file");
-        }
-        return rmdir($dir);
-    }
+    
 
     public static function getFiles(){
         $files=[];
@@ -73,7 +67,7 @@ class Helper {
     }
 
     private static function copySource($from,$to){
-        if ( file_exists( $to )) self::delTree($to);
+        if ( file_exists( $to )) FileHelper::delTree($to);
         if (!file_exists( $to )){ mkdir($to,0777,true); }
 
         FileHelper::listFiles($from,$files);
@@ -108,10 +102,9 @@ class Helper {
                 $client
             ])
         );
-        exit();
+
         $files = self::getFiles();
         $toolkits = ['classic','modern',''];
-
         foreach($toolkits as $toolkit){
             $path = implode('/',[
                 dirname($config['sencha_compiler_source']),
@@ -121,14 +114,16 @@ class Helper {
                 'system'
             ]);
             if (!file_exists( $path )){ mkdir($path,0777,true); }
-            self::delTree($path);
+            // FileHelper::delTree($path);
             foreach($files as $fileItem){
+                
                 if (isset($fileItem['toolkit']) && ($fileItem['toolkit']==$toolkit) ){
                     if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
                     foreach($fileItem['files'] as $filelistitem){
                         if (file_exists($filelistitem['file'])){
-                            if (!file_exists( $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath']) ){ mkdir($path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'],0777,true); }
-                            copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
+                            if($filelistitem['subpath']!='')$filelistitem['subpath']='/'.$filelistitem['subpath'];
+                            if (!file_exists( $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath']) ){ mkdir($path.'/'.$fileItem['modul'].$filelistitem['subpath'],0777,true); }
+                            copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
                         }
                     }
                 }
@@ -138,7 +133,12 @@ class Helper {
         }
 
 
-        chdir($config['sencha_compiler_source']);
+        chdir(
+            implode('/',[
+                dirname($config['sencha_compiler_source']),
+                $client
+            ])
+        );
         $params = [$config['sencha_compiler_command']];
         $params[] = 'build';
         if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
@@ -147,12 +147,14 @@ class Helper {
         $data = [];
         $index = 0;
         foreach($result as $row){
-            
             preg_match('/(?P<level>\[(\w+)\])\s(?P<note>.+)/', $row, $matches, PREG_OFFSET_CAPTURE);
             if (isset($matches['note'])&&isset($matches['level']))
             $data[] = [
                 'index'=>$index++,
-                'note'=>str_replace($config['sencha_compiler_source'],'.',$matches['note'][0]),
+                'note'=>str_replace(implode('/',[
+                    dirname($config['sencha_compiler_source']),
+                    $client
+                ]),'.',$matches['note'][0]),
                 'level'=>$matches['level'][0]
             ];
         }

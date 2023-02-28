@@ -1,5 +1,6 @@
 <?php
 namespace Tualo\Office\ExtJSCompiler;
+use Tualo\Office\ExtJSCompiler\FileHelper;
 
 class Helper {
 
@@ -70,11 +71,25 @@ class Helper {
         return $allfiles;
     }
 
+    private static function copySource($from,$to){
+        if ( file_exists( $to )) self::delTree($to);
+        if (!file_exists( $to )){ mkdir($to,0777,true); }
+        FileHelper::listFiles($from,$files);
+        print_r($files);
+    }
 
     public static function compile($config, $client) {
         if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
         if (!isset($config['sencha_compiler_source'])) throw new \Exception("sencha_compiler_source not defined");
 
+        self::copySource(
+            $config['sencha_compiler_source'],
+            implode('/',[
+                dirname($config['sencha_compiler_source']),
+                $client
+            ])
+        );
+        exit();
         $files = self::getFiles();
         $toolkits = ['classic','modern',''];
 

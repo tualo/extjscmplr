@@ -81,7 +81,7 @@ class Helper {
         App::logger('compiler')->info('my message');
         foreach($files as $file){
             if($file['subpath']!='')$file['subpath']='/'.$file['subpath'];
-            if (!file_exists( $to.$file['subpath'] )){ mkdir($to.$file['subpath'],0777,true); }
+            
 
             if(
                 ( $file['subpath'] == '/ext') ||
@@ -89,6 +89,7 @@ class Helper {
             ){
 
             }else{
+                if (!file_exists( $to.$file['subpath'] )){ mkdir($to.$file['subpath'],0777,true); }
                 copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
             }
         }

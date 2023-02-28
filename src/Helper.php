@@ -1,5 +1,6 @@
 <?php
 namespace Tualo\Office\ExtJSCompiler;
+use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\ExtJSCompiler\FileHelper;
 
 class Helper {
@@ -74,8 +75,21 @@ class Helper {
     private static function copySource($from,$to){
         if ( file_exists( $to )) self::delTree($to);
         if (!file_exists( $to )){ mkdir($to,0777,true); }
+
         FileHelper::listFiles($from,$files);
-        print_r($files);
+
+        App::logger('compiler')->info('my message');
+        foreach($files as $file){
+            if($file['subpath']!='')$file['subpath']='/'.$file['subpath'];
+            if (!file_exists( $to.$file['subpath'] )){ mkdir($to.$file['subpath'],0777,true); }
+            if(strpos($file['subpath'],'ext/')===0){
+                App::logger('compiler')->info('dont copy library' );
+            }else{
+                App::logger('compiler')->info('copy '.$file['subpath'].'/'.basename($file['file'] ));
+                copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
+            }
+        }
+        // print_r($files);
     }
 
     public static function compile($config, $client) {

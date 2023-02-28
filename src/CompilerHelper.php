@@ -7,10 +7,10 @@ use Tualo\Office\ExtJSCompiler\FileHelper;
 
 class CompilerHelper {
     
-    public static function getFiles($modul,$prio){
+    public static function getFiles($dir,$modul,$prio){
         $files = [];
         $l = [];
-        FileHelper::listFiles(__DIR__."/js/modern",$l);
+        FileHelper::listFiles($dir."/js/modern",$l);
         $files[] = [
             'prio'=>$prio,
             'toolkit'=>'modern',
@@ -19,7 +19,7 @@ class CompilerHelper {
         ];  
 
         $l = [];
-        FileHelper::listFiles(__DIR__."/js/classic",$l);
+        FileHelper::listFiles($dir."/js/classic",$l);
         $files[] = [
             'prio'=>$prio,
             'toolkit'=>'classic',
@@ -28,7 +28,7 @@ class CompilerHelper {
         ];  
         
         $l = [];
-        FileHelper::listFiles(__DIR__."/js/both",$l);
+        FileHelper::listFiles($dir."/js/both",$l);
         $files[] = [
             'prio'=>$prio,
             'toolkit'=>'',

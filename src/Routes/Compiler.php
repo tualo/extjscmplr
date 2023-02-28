@@ -35,7 +35,6 @@ class Read implements IRoute{
         BasicRoute::add('/app.js',function($matches){
 
             $compiler_config = (App::get('configuration'))['ext-compiler'];
-            Helper::compile( $compiler_config );
 
             $source = dirname( (App::get('configuration'))['ext-compiler']['sencha_compiler_source'] );
             /*

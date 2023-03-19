@@ -88,8 +88,10 @@ class Ui implements IRoute{
             if (($matches['path']=='')||($matches['path']=='/')) $matches['path']='index.html';
             if (!file_exists($path.'/'.$matches['path'])){
                 exit(404);
+            }else{
+                self::readfile($path.'/'.$matches['path']);
+                exit();
             }
-            self::readfile($path.'/'.$matches['path']);
         },['get'],false);
     }
 }

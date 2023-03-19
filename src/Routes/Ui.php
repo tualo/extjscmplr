@@ -61,6 +61,9 @@ class Ui implements IRoute{
         header('ETag: ' . $server_etag);
         header('Content-Type: ', mime_content_type($filename));
         // check: are client and server headers identical ("no changes")?
+        $ext = pathinfo($filename, PATHINFO_EXTENSION);
+        if ($ext=='css'){ header('Content-Type: text/css');}
+        if ($ext=='js'){ header('Content-Type: application/javascript');}
         if (
             ($client_last_modified && $client_etag) || $strict
             ?   $matching_last_modified && $matching_etag

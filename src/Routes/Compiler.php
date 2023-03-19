@@ -14,7 +14,7 @@ class Read implements IRoute{
             $compiler_config = (App::get('configuration'))['ext-compiler'];
             App::result('compile', Helper::getFiles($compiler_config ));
             App::contenttype('application/json');
-        },['get','post'],true);
+        },['get','post'],false);
 
         BasicRoute::add('/compiler',function($matches){
             if (isset((App::get('configuration'))['ext-compiler'])){

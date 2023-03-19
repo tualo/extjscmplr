@@ -5,7 +5,24 @@ use Tualo\Office\ExtJSCompiler\FileHelper;
 
 class Helper {
 
-    
+    public static function getBuildPath(){
+        $compiler_config = (App::get('configuration'))['ext-compiler'];
+        return implode('/',[
+            dirname($compiler_config['sencha_compiler_source']),
+            self::getCurrentClient()
+        ]);
+    }
+    public static function getCurrentClient(){
+        $client='default';
+        if (
+            isset($_SESSION['tualoapplication']) &&
+            isset($_SESSION['tualoapplication']['loggedIn']) &&
+            $_SESSION['tualoapplication']['loggedIn'] === true
+        ){
+            $client = $_SESSION['tualoapplication']['client'];
+        }
+        return $client;
+    }
 
     public static function getFiles(){
         $files=[];

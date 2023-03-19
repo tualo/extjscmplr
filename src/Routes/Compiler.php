@@ -20,15 +20,7 @@ class Read implements IRoute{
             if (isset((App::get('configuration'))['ext-compiler'])){
                 $compiler_config = (App::get('configuration'))['ext-compiler'];
                 try{
-                    $client='default';
-                    if (
-                        isset($_SESSION['tualoapplication']) &&
-                        isset($_SESSION['tualoapplication']['loggedIn']) &&
-                        $_SESSION['tualoapplication']['loggedIn'] === true
-                    ){
-                        $client = $_SESSION['tualoapplication']['client'];
-                    }
-                    
+                    $client=Helper::getCurrentClient();
                     App::result('compile', Helper::compile($compiler_config, $client ));
                     App::result('success', true);
                 }catch(\Exception $e){

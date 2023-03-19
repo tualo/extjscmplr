@@ -59,7 +59,7 @@ class Ui implements IRoute{
         // set: new headers for cache recognition
         header('Last-Modified: ' . $server_last_modified);
         header('ETag: ' . $server_etag);
-
+        header('Content-Type: ', mime_content_type($filename));
         // check: are client and server headers identical ("no changes")?
         if (
             ($client_last_modified && $client_etag) || $strict

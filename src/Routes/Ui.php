@@ -86,12 +86,10 @@ class Ui implements IRoute{
                 throw new \Exception("Version could not be build");
             }
             if (($matches['path']=='')||($matches['path']=='/')) $matches['path']='index.html';
-            echo $path.'/'.$matches['path'];exit();
             if (!file_exists($path.'/'.$matches['path'])){
                 exit(404);
             }
             self::readfile($path.'/'.$matches['path']);
-            print_r($matches);exit();
         },['get'],false);
     }
 }

@@ -9,9 +9,13 @@ class Helper {
         $compiler_config = (App::get('configuration'))['ext-compiler'];
         return implode('/',[
             dirname($compiler_config['sencha_compiler_source']),
-            self::getCurrentClient()
+            self::getCurrentClient(),
+            'build',
+            'production',
+            'Tualo'
         ]);
     }
+    
     public static function getCurrentClient(){
         $client='default';
         if (

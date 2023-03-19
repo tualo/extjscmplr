@@ -15,7 +15,9 @@ class Ui implements IRoute{
             $path = Helper::getBuildPath();
             echo  $path.PHP_EOL;
             echo  $client.PHP_EOL;
-
+            if (!file_exists($path) || !is_dir($path)){
+                echo "compile needed";
+            }
             print_r($matches);exit();
         },['get'],false);
     }

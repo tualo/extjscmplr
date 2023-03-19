@@ -12,6 +12,6 @@ class Ui implements IRoute{
     public static function register(){
         BasicRoute::add('/ui/(?P<path>.*)',function($matches){
             print_r($matches);exit();
-        },['get'],true);
+        },['get'],false);
     }
 }

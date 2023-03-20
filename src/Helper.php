@@ -2,6 +2,7 @@
 namespace Tualo\Office\ExtJSCompiler;
 use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\ExtJSCompiler\FileHelper;
+use Tualo\Office\ExtJSCompiler\AppJson;
 
 class Helper {
 
@@ -15,7 +16,7 @@ class Helper {
             'Tualo'
         ]);
     }
-    
+
     public static function getCurrentClient(){
         $client='default';
         if (
@@ -93,6 +94,8 @@ class Helper {
 
         FileHelper::listFiles($from,$files);
 
+        
+
         App::logger('compiler')->info('my message');
         foreach($files as $file){
             if($file['subpath']!='')$file['subpath']='/'.$file['subpath'];
@@ -106,6 +109,17 @@ class Helper {
             }else{
                 if (!file_exists( $to.$file['subpath'] )){ mkdir($to.$file['subpath'],0777,true); }
                 copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
+                if (basename($file['file'] )=='app.js'){
+                    file_put_contents(
+                        $to.$file['subpath'].'/'.basename($file['file'] ),
+                        str_replace(
+                            "mainView: 'Tualo.view.main.Main'",
+                            "mainView: 'Tualo.view.main.Main'",
+                            file_get_contents($to.$file['subpath'].'/'.basename($file['file'] ))
+                        )
+                    );
+                }
+                
             }
         }
         symlink($from.'/ext', $to.'/ext');
@@ -124,6 +138,8 @@ class Helper {
             ])
         );
 
+        
+        $append_modules=[];
         $files = self::getFiles();
         $toolkits = ['classic','modern',''];
         foreach($toolkits as $toolkit){
@@ -139,6 +155,8 @@ class Helper {
             foreach($files as $fileItem){
                 
                 if (isset($fileItem['toolkit']) && ($fileItem['toolkit']==$toolkit) ){
+                    if(!in_array($toolkit,$append_modules)) $append_modules[] = $toolkit;
+
                     if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
                     foreach($fileItem['files'] as $filelistitem){
                         if (file_exists($filelistitem['file'])){
@@ -153,6 +171,11 @@ class Helper {
 
         }
 
+        AppJson::append('requires',$append_modules);
+        file_put_contents(implode('/',[
+            dirname($config['sencha_compiler_source']),
+            $client
+        ]),json_encode(AppJson::get()));
 
         chdir(
             implode('/',[

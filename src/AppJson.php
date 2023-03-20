@@ -33,11 +33,11 @@ class AppJson {
         "indexHtmlPath"=> "index.html",
         "classpath"=> [
             "app",
-            "$[toolkit.name]/src"
+            "$"."{toolkit.name}/src"
         ],
         "overrides"=> [
             "overrides",
-            "$[toolkit.name]/overrides"
+            "$"."{toolkit.name}/overrides"
         ],
         "fashion"=> [
             "missingParameters"=> "error",
@@ -49,17 +49,17 @@ class AppJson {
             "namespace"=> "Tualo",
             "etc"=> [
                 "sass/etc/all.scss",
-                "$[toolkit.name]/sass/etc/all.scss"
+                "$"."{toolkit.name}/sass/etc/all.scss"
             ],
             "var"=> [
                 "sass/var/all.scss",
                 "sass/var",
-                "$[toolkit.name]/sass/var/all.scss",
-                "$[toolkit.name]/sass/var"
+                "$"."{toolkit.name}/sass/var/all.scss",
+                "$"."{toolkit.name}/sass/var"
             ],
             "src"=> [
                 "sass/src",
-                "$[toolkit.name]/sass/src"
+                "$"."{toolkit.name}/sass/src"
             ]
         ],
         "js"=> [
@@ -72,7 +72,7 @@ class AppJson {
             "js"=> [
                 // Remove this entry to individually load sources from the framework.
                 [
-                    "path"=> "$[framework.dir]/build/ext-all-rtl-debug.js"
+                    "path"=> "$"."{framework.dir}/build/ext-all-rtl-debug.js"
                 ]
             ]
         ],
@@ -80,13 +80,13 @@ class AppJson {
             "js"=> [
                 // Remove this entry to individually load sources from the framework.
                 [
-                    "path"=> "$[framework.dir]/build/ext-modern-all-debug.js"
+                    "path"=> "$"."{framework.dir}/build/ext-modern-all-debug.js"
                 ]
             ]
         ],
         "css"=> [
             [
-                "path"=> "$[build.out.css.path]",
+                "path"=> "$"."{build.out.css.path}",
                 "bundle"=> true,
                 "exclude"=> ["fashion"]
             ]
@@ -103,7 +103,7 @@ class AppJson {
                 ]
             ],
             "loader"=> [
-                "cache"=> "$[build.timestamp]"
+                "cache"=> "$"."{build.timestamp}"
             ],
             "cache"=> [
                 "enable"=> true
@@ -120,29 +120,29 @@ class AppJson {
             ]
         ],
         "bootstrap"=> [
-            "base"=> "$[app.dir]",
+            "base"=> "$"."{app.dir}",
     
-            "manifest"=> "$[build.id].json",
+            "manifest"=> "$"."{build.id}.json",
     
             "microloader"=> "bootstrap.js",
             "css"=> "bootstrap.css"
         ],
         "output"=> [
-            "base"=> "$[workspace.build.dir]/$[build.environment]/$[app.name]",
+            "base"=> "$"."{workspace.build.dir}/$"."{build.environment}/$"."{app.name}",
             "page"=> "index.html",
-            "manifest"=> "$[build.id].json",
-            "js"=> "$[build.id]/app.js",
+            "manifest"=> "$"."{build.id}.json",
+            "js"=> "$"."{build.id}/app.js",
             "appCache"=> [
                 "enable"=> false
             ],
             "resources"=> [
-                "path"=> "$[build.id]/resources",
+                "path"=> "$"."{build.id}/resources",
                 "shared"=> "resources"
             ]
         ],
         "cache"=> [
             "enable"=> false,
-            "deltas"=> "$[build.id]/deltas"
+            "deltas"=> "$"."{build.id}/deltas"
         ],
         "appCache"=> [
             "cache"=> [
@@ -159,13 +159,13 @@ class AppJson {
                 "output"=> "shared"
             ],
             [
-                "path"=> "$[toolkit.name]/resources"
+                "path"=> "$"."{toolkit.name}/resources"
             ],
             [
-                "path"=> "$[build.id]/resources"
+                "path"=> "$"."{build.id}/resources"
             ]
         ],
-        "archivePath"=> "archive/$[build.id]",
+        "archivePath"=> "archive/$"."{build.id}",
         "builds"=> [
             "classic"=> [
                 "toolkit"=> "classic",

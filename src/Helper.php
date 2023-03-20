@@ -155,7 +155,7 @@ class Helper {
             foreach($files as $fileItem){
                 
                 if (isset($fileItem['toolkit']) && ($fileItem['toolkit']==$toolkit) ){
-                    if(!in_array($toolkit,$append_modules)) $append_modules[] = $toolkit;
+                    if(!in_array($toolkit==''?'both':$toolkit,$append_modules)) $append_modules[] = $toolkit==''?'both':$toolkit;
 
                     if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
                     foreach($fileItem['files'] as $filelistitem){
@@ -171,11 +171,12 @@ class Helper {
 
         }
 
-        AppJson::append('requires',$append_modules);
+        AppJson::append('classpath',$append_modules);
         file_put_contents(implode('/',[
             dirname($config['sencha_compiler_source']),
-            $client
-        ]),json_encode(AppJson::get()));
+            $client,
+            'app.json'
+        ]),json_encode(AppJson::get()),JSON_PRETTY_PRINT);
 
         chdir(
             implode('/',[

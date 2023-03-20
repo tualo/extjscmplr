@@ -28,7 +28,7 @@ class Read implements IRoute{
                 }
             }
             App::contenttype('application/json');
-        },['get','post'],true);
+        },['get','post'],false);
 
 
     }

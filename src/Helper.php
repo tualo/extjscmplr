@@ -176,7 +176,7 @@ class Helper {
             dirname($config['sencha_compiler_source']),
             $client,
             'app.json'
-        ]),json_encode(AppJson::get()),JSON_PRETTY_PRINT);
+        ]),json_encode(AppJson::get(),JSON_PRETTY_PRINT));
 
         chdir(
             implode('/',[

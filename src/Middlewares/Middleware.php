@@ -1,6 +1,6 @@
 <?php
 
-namespace Tualo\Office\MonacoEditor\Middlewares;
+namespace Tualo\Office\ExtJSCompiler\Middlewares;
 use Tualo\Office\Basic\TualoApplication;
 use Tualo\Office\Basic\IMiddleware;
 

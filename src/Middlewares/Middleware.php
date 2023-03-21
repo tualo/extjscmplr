@@ -8,8 +8,8 @@ class Middleware implements IMiddleware{
     public static function register(){
         TualoApplication::use('extjscmplr',function(){
             try{
-                TualoApplication::javascript('extjscmplr', './cmplr/ext_before_load.js',[],-10000);
-                TualoApplication::javascript('extjscmplr', './cmplr/bootstrap.js',[],-10000);
+                TualoApplication::javascript('extjscmplr_ext_before_load', './cmplr/ext_before_load.js',[],-10000);
+                TualoApplication::javascript('extjscmplr_bootstrap', './cmplr/bootstrap.js',[],1000000);
                 
 
             }catch(\Exception $e){

@@ -11,14 +11,11 @@ class Js implements IRoute{
     public static function register(){
 
         BasicRoute::add('/cmplr/(?P<file>[\/.\w\d\-]+)',function($matches){
-            if ($matches['file']=='bootstrap.js'){
-                App::contenttype('application/javascript');
-                App::etagFile(Helper::getBuildPath().'/'.$matches['file']);
-            }else if (file_exists(dirname(__DIR__,1).'/libjs/'.$matches['file'].'')){
-                $path_parts = pathinfo(dirname(__DIR__,2).'/libjs/'.$matches['file'].'');
+            if (file_exists(Helper::getBuildPath().'/'.$matches['file'].'')){
+                $path_parts = pathinfo(Helper::getBuildPath().'/'.$matches['file'].'');
                 if ($path_parts['extension']=='js')   App::contenttype('application/javascript');
                 if ($path_parts['extension']=='css')   App::contenttype('text/css');
-                App::etagFile((dirname(__DIR__,2).'/libjs/'.$matches['file'].''));
+                App::etagFile(Helper::getBuildPath().'/'.$matches['file'].'');
             }else{
                 App::body("// hm, something is wrong ".$matches['file']);
             }

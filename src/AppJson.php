@@ -121,15 +121,14 @@ class AppJson {
         ],
         "bootstrap"=> [
             "base"=> "$"."{app.dir}",
-    
             "manifest"=> "$"."{build.id}.json",
-    
             "microloader"=> "bootstrap.js",
             "css"=> "bootstrap.css"
         ],
         "output"=> [
             "base"=> "$"."{workspace.build.dir}/$"."{build.environment}/$"."{app.name}",
             "page"=> "index.html",
+            "microloader"=> "bootstrap.js",
             "manifest"=> "$"."{build.id}.json",
             "js"=> "$"."{build.id}/app.js",
             "appCache"=> [

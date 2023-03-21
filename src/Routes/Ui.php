@@ -64,7 +64,7 @@ class Ui implements IRoute{
         if ($ext=='css'){ header('Content-Type: text/css');}
         if ($ext=='js'){ header('Content-Type: application/javascript');}
         if ($ext=='html'){ header('Content-Type: text/html'); }
-        
+
         if (
             ($client_last_modified && $client_etag) || $strict
             ?   $matching_last_modified && $matching_etag
@@ -79,6 +79,7 @@ class Ui implements IRoute{
 
 
     public static function register(){
+        
         BasicRoute::add('/ui(?P<path>.*)',function($matches){
             $client=Helper::getCurrentClient();
             $path = Helper::getBuildPath();

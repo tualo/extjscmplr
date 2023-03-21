@@ -79,8 +79,7 @@ class Ui implements IRoute{
 
 
     public static function register(){
-        
-        BasicRoute::add('/ui(?P<path>.*)',function($matches){
+        BasicRoute::add('/(?P<path>.*)',function($matches){
             $client=Helper::getCurrentClient();
             $path = Helper::getBuildPath();
             $compiler_config = (App::get('configuration'))['ext-compiler'];
@@ -90,9 +89,9 @@ class Ui implements IRoute{
             if (!file_exists($path) || !is_dir($path)){
                 throw new \Exception("Version could not be build");
             }
-            if (($matches['path']=='')||($matches['path']=='/')) $matches['path']='index.html';
+            if (($matches['path']=='')||($matches['path']=='/')) return; //bsc should do that job // $matches['path']='index.html';
             if (!file_exists($path.'/'.$matches['path'])){
-                exit(404);
+                // 
             }else{
                 self::readfile($path.'/'.$matches['path']);
                 exit();

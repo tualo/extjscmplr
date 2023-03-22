@@ -206,7 +206,6 @@ class Helper {
         $params[] = 'build';
         if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
         exec(implode(' ',$params),$result,$return_code);
-
         $data = [];
         $index = 0;
         foreach($result as $row){
@@ -222,7 +221,7 @@ class Helper {
             ];
         }
 
-        self::extract();
+        if ($return_code==0) self::extract();
         return [
             'return_code'=>$return_code,
             // 'result'=>($result),

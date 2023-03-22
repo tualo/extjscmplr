@@ -1,5 +1,6 @@
 <?php
 namespace Tualo\Office\ExtJSCompiler;
+use DOMDocument;
 use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\ExtJSCompiler\FileHelper;
 use Tualo\Office\ExtJSCompiler\AppJson;
@@ -15,6 +16,23 @@ class Helper {
             'production',
             'Tualo'
         ]);
+    }
+
+    public static function extract(){
+        $doc = new DOMDocument();
+        $doc->loadHTMLFile(Helper::getBuildPath().'/index.html');
+        $elements = $doc->getElementsByTagName('script');
+        $index =0;
+        if (!is_null($elements)) {
+            foreach ($elements as $element) {
+                if ($index==0){
+                    file_put_contents(Helper::getBuildPath().'/ext_start.js',$element->textContent);
+                }else if ($index==1){
+                    file_put_contents(Helper::getBuildPath().'/bootstrap.js',$element->textContent);
+                }
+                $index++;
+            }
+        }
     }
 
     public static function getCurrentClient(){
@@ -203,6 +221,8 @@ class Helper {
                 'level'=>$matches['level'][0]
             ];
         }
+
+        self::extract();
         return [
             'return_code'=>$return_code,
             // 'result'=>($result),

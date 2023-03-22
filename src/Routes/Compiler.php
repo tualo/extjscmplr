@@ -12,23 +12,9 @@ class Read implements IRoute{
     public static function register(){
         BasicRoute::add('/compiler_extract',function($matches){
 
-            $doc = new DOMDocument();
-            $doc->loadHTMLFile(Helper::getBuildPath().'/index.html');
-            $elements = $doc->getElementsByTagName('script');
-            $index =0;
-            if (!is_null($elements)) {
-                foreach ($elements as $element) {
-                    if ($index==0){
-                        file_put_contents(Helper::getBuildPath().'/ext_start.js',$element->textContent);
-                    }else if ($index==1){
-                        file_put_contents(Helper::getBuildPath().'/bootstrap.js',$element->textContent);
-                    }
-                    $index++;
-                }
-            }
-            var_dump($elements );
-            exit();
-
+            Helper::extract();
+            App::contenttype('application/json');
+            App::result('success', true);
         },['get','post'],false);
 
 

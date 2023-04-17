@@ -25,17 +25,31 @@ class Read implements IRoute{
         },['get','post'],false);
 
         BasicRoute::add('/compiler',function($matches){
+            App::contenttype('application/json');
             if (isset((App::get('configuration'))['ext-compiler'])){
                 $compiler_config = (App::get('configuration'))['ext-compiler'];
                 try{
                     $client=Helper::getCurrentClient();
-                    App::result('compile', Helper::compile($compiler_config, $client ));
-                    App::result('success', true);
+                    $res = Helper::compile($compiler_config);
+                    App::result('compile', $res);
+                    if ($res['return_code']!=0){
+                        foreach($res['data'] as $row){
+                            if ($row['level']=='[ERR]'){
+                                App::result('msg', $row['note']);
+                                break;
+                            }
+                        }
+                        App::result('success', false);
+                    }else{
+                        
+                        App::result('success', true);
+                    }
+
                 }catch(\Exception $e){
                     App::result('msg', $e->getMessage());
+                    BasicRoute::$finished=true;
                 }
             }
-            App::contenttype('application/json');
         },['get','post'],false);
 
 

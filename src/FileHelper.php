@@ -9,7 +9,7 @@ class FileHelper {
         foreach ($files as $file) {
             (is_dir("$dir/$file")&&(!is_link("$dir/$file"))) ? self::delTree("$dir/$file") : unlink("$dir/$file");
         }
-        return rmdir($dir);
+        return @rmdir($dir);
     }
     
     public static function listFiles($path,&$files,$replacesubpath=''){

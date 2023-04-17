@@ -80,9 +80,11 @@ class Ui implements IRoute{
 
     public static function register(){
         BasicRoute::add('/(?P<path>.*)',function($matches){
-            $client=Helper::getCurrentClient();
-            $path = Helper::getBuildPath();
-            $compiler_config = (App::get('configuration'))['ext-compiler'];
+            try{
+                $client=Helper::getCurrentClient();
+                $path = Helper::getCachePath();
+                
+                $compiler_config = (App::get('configuration'))['ext-compiler'];
             if (!file_exists($path) || !is_dir($path)){
                 Helper::compile($compiler_config, $client );
             }
@@ -96,6 +98,9 @@ class Ui implements IRoute{
                 self::readfile($path.'/'.$matches['path']);
                 exit();
             }
+        }catch(\Exception $e){
+          //  echo $e->getMessage();
+        }
         },['get'],false);
     }
 }

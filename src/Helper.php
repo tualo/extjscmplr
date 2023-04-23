@@ -120,15 +120,13 @@ class Helper {
         return $allfiles;
     }
 
-    public static function copySource($from,$to){
-        if ( file_exists( $to )) FileHelper::delTree($to);
+    public static function copySource($from,$to):array{
+        $copiedFiles=[];
+        //if ( file_exists( $to )) FileHelper::delTree($to);
         if (!file_exists( $to )) { mkdir($to,0777,true); }
-
         $files=[];
         FileHelper::listFiles($from,$files);
-        
-
-        App::logger('compiler')->info('my message');
+        //App::logger('compiler')->info('my message');
         foreach($files as $file){
             if($file['subpath']!='')$file['subpath']='/'.$file['subpath'];
             
@@ -143,20 +141,16 @@ class Helper {
 
                 // copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
 
-                $originalHash = '32ior72uweicssejuoz';
-                $destinationHash = 'nwebfhqwetr65';
-                
-                if (file_exists($file['file']))
-                $originalHash = md5_file($file['file']);
-
+                $originalHash = ' ';
+                $destinationHash = '';
+                if (file_exists($file['file'])) $originalHash = md5_file($file['file']);
                 if (file_exists($to.$file['subpath'].'/'.basename($file['file'] )))
                 $destinationHash = md5_file($to.$file['subpath'].'/'.basename($file['file'] ));
-                if ($originalHash.'.' == $destinationHash) {
+                if ($originalHash == $destinationHash) {
                     
                 }else{
-
-                    // echo "copy ". $to.$file['subpath'].'/'.basename($file['file'])."".PHP_EOL;
                     copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
+                    $copiedFiles[] = $file['subpath'].'/'.basename($file['file'] );
                 }
 
                 if (basename($file['file'] )=='app.js'){
@@ -172,21 +166,20 @@ class Helper {
                 
             }
         }
+        return $copiedFiles;
     }
 
-    public static function compile($config) {
-
-
+    public static function copy($config):array {
         if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
         if (!isset($config['sencha_compiler_sdk'])){ throw new \Exception("sencha_compiler_sdk not defined"); }
         if (!isset($config['sencha_compiler_source'])){
             $config['sencha_compiler_source'] = dirname(__DIR__,1).'/compiler_source/Tualo';
         }
-        self::copySource( $config['sencha_compiler_source'], self::getBuildPath() );
+        $copiedFiles = self::copySource( $config['sencha_compiler_source'], self::getBuildPath() );
         if (!file_exists( self::getBuildPath().'/ext' )){
             symlink($config['sencha_compiler_sdk'].'', self::getBuildPath().'/ext');
         }
-        
+
         $append_modules=[];
         $files = self::getFiles();
         $toolkits = ['classic','modern',''];
@@ -209,7 +202,21 @@ class Helper {
                         if (file_exists($filelistitem['file'])){
                             if($filelistitem['subpath']!='')$filelistitem['subpath']='/'.$filelistitem['subpath'];
                             if (!file_exists( $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath']) ){ mkdir($path.'/'.$fileItem['modul'].$filelistitem['subpath'],0777,true); }
-                            copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
+
+                            $originalHash = ' ';
+                            $destinationHash = '';
+                            if (file_exists($filelistitem['file'])) $originalHash = md5_file($filelistitem['file']);
+                            if (file_exists($path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file'])))
+                            $destinationHash = md5_file(  $path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file'])  );
+                            if ($originalHash == $destinationHash) {
+                                
+                            }else{
+                                copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
+                                $copiedFiles[] = $fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file']);
+                            }
+
+                            
+                            
                         }
                     }
                 }
@@ -218,13 +225,31 @@ class Helper {
 
         }
 
+
         AppJson::append('classpath',$append_modules);
         file_put_contents(implode('/',[
             self::getBuildPath(),
             'app.json'
         ]),json_encode(AppJson::get(),JSON_PRETTY_PRINT));
 
+
+        return [$copiedFiles,$append_modules];
+    }
+
+    public static function compile($config) {
+
+
+        if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
+        if (!isset($config['sencha_compiler_sdk'])){ throw new \Exception("sencha_compiler_sdk not defined"); }
+        if (!isset($config['sencha_compiler_source'])){
+            $config['sencha_compiler_source'] = dirname(__DIR__,1).'/compiler_source/Tualo';
+        }
+        
+        list($copiedfiles,$append_modules) = self::copy($config);
+
+
         chdir( self::getBuildPath() );
+        exec('export _JAVA_OPTIONS=-Xms2048m -Xmx8192m -Dapple.awt.UIElement=true');
         
         $params = [$config['sencha_compiler_command']];
         $params[] = 'build';

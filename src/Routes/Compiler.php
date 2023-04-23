@@ -20,7 +20,16 @@ class Read implements IRoute{
 
         BasicRoute::add('/compiler_files',function($matches){
             $compiler_config = (App::get('configuration'))['ext-compiler'];
-            App::result('compile', Helper::getFiles($compiler_config ));
+            App::result('files', Helper::getFiles($compiler_config ));
+            App::result('success', true );
+            App::contenttype('application/json');
+        },['get','post'],false);
+
+
+        BasicRoute::add('/compiler_copy',function($matches){
+            $compiler_config = (App::get('configuration'))['ext-compiler'];
+            App::result('compile', Helper::copy( $compiler_config ));
+            App::result('success', true );
             App::contenttype('application/json');
         },['get','post'],false);
 

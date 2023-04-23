@@ -28,7 +28,9 @@ class AppJson {
         "version"=> "1.0.0.0",
         "framework"=> "ext",
         "requires"=> [
-            "font-awesome"
+            "font-awesome",
+            "ux",
+            "charts"
         ],
         "indexHtmlPath"=> "index.html",
         "classpath"=> [

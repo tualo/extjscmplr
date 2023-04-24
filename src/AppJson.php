@@ -30,8 +30,10 @@ class AppJson {
         "requires"=> [
             "font-awesome",
             "ux",
-            "charts"
+            "charts",
+            "ext-locale"
         ],
+        "locale" => "de",
         "indexHtmlPath"=> "index.html",
         "classpath"=> [
             "app",

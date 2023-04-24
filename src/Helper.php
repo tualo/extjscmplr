@@ -249,8 +249,8 @@ class Helper {
 
 
         chdir( self::getBuildPath() );
-        exec('export _JAVA_OPTIONS=-Xms2048m -Xmx8192m -Dapple.awt.UIElement=true');
-        
+        # exec('export _JAVA_OPTIONS=-Xms2048m -Xmx8192m -Dapple.awt.UIElement=true');
+
         $params = [$config['sencha_compiler_command']];
         $params[] = 'build';
         if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];

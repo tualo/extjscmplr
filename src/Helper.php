@@ -191,7 +191,8 @@ class Helper {
                 'system'
             ]);
             if (!file_exists( $path )){ mkdir($path,0777,true); }
-            // FileHelper::delTree($path);
+            
+            FileHelper::delTree($path);
             foreach($files as $fileItem){
                 
                 if (isset($fileItem['toolkit']) && ($fileItem['toolkit']==$toolkit) ){

@@ -10,6 +10,7 @@ use Tualo\Office\Basic\TualoApplication as App;
 class Compiler extends PostCheck {
     public static function test(array $config){
         $config = App::get('configuration');
+
         if (!isset($config['ext-compiler'])){
             self::formatPrintLn(['yellow'],"\text-compiler section not defined");
         }else{
@@ -27,5 +28,6 @@ class Compiler extends PostCheck {
         }else{
             self::formatPrintLn(['green'],"\tsencha_compiler_sdk defined");
         }
+        
     }
 }

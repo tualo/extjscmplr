@@ -27,6 +27,9 @@ class Compiler extends PostCheck {
             self::formatPrintLn(['yellow'],"\tsencha_compiler_sdk not defined");
         }else{
             self::formatPrintLn(['green'],"\tsencha_compiler_sdk defined");
+            if (!file_exists($config['ext-compiler']['sencha_compiler_sdk'])&&!is_dir($config['ext-compiler']['sencha_compiler_sdk'])){
+                self::formatPrintLn(['red'],"\tsencha_compiler_sdk not accessible");
+            }
         }
         
     }

@@ -17,13 +17,13 @@ class Compiler extends PostCheck {
             self::formatPrintLn(['green'],"\text-compiler section defined");
         }
 
-        if (!isset($config['sencha_compiler_command'])){
+        if (!isset($config['ext-compiler']['sencha_compiler_command'])){
             self::formatPrintLn(['yellow'],"\tsencha_compiler_command not defined");
         }else{
             self::formatPrintLn(['green'],"\tsencha_compiler_command defined");
         }
 
-        if (!isset($config['sencha_compiler_sdk'])){
+        if (!isset($config['ext-compiler']['sencha_compiler_sdk'])){
             self::formatPrintLn(['yellow'],"\tsencha_compiler_sdk not defined");
         }else{
             self::formatPrintLn(['green'],"\tsencha_compiler_sdk defined");

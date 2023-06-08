@@ -58,6 +58,8 @@ class Compiler extends PostCheck {
                         if ($res['return_code']!=0){
                             foreach($res['data'] as $row){
                                 if ($row['level']=='[ERR]'){
+                                    
+                                    self::formatPrintLn(['orange'],"\ttry: export OPENSSL_CONF=/dev/null ");
                                     self::formatPrintLn(['red'],"\t".$row['note']);
                                     break;
                                 }

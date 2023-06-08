@@ -41,10 +41,11 @@ class Compiler extends PostCheck {
         echo "$client \n";
         echo "$path \n";
         */
-        if (file_exists($path) || !is_dir($path)){
+        if (!file_exists($path) || !is_dir($path)){
+
             self::formatPrintLn(['yellow'],"\tshould compiled first");
             $prompt = [
-                "\t".'do you want to compile the "'.$client.'" now? [y|n|c]'
+                "\t".'do you want to compile the "'.$client.'" now? [y|n|c] '
             ];
             while(in_array($line = readline(implode("\n",$prompt)),['yes','y','n','no','c'])){
                 if ($line=='c') exit();
@@ -53,7 +54,17 @@ class Compiler extends PostCheck {
                     if (is_null(App::get('session'))){
                         self::formatPrintLn(['red'],"\t not possible, no database");
                     }else{
-                        Helper::compile($config['ext-compiler'], $client );
+                        $res = Helper::compile($config['ext-compiler'], $client );
+                        if ($res['return_code']!=0){
+                            foreach($res['data'] as $row){
+                                if ($row['level']=='[ERR]'){
+                                    self::formatPrintLn(['red'],"\t".$row['note']);
+                                    break;
+                                }
+                            }
+                        }else{
+                            self::formatPrintLn(['green'],"\t compiled");
+                        }
                     }
                     break;
                 }

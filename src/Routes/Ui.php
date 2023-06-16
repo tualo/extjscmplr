@@ -95,6 +95,7 @@ class Ui implements IRoute{
             if (!file_exists($path.'/'.$matches['path'])){
                 // 
             }else{
+                header('Content-Type: '.mime_content_type($path.'/'.$matches['path']));
                 self::readfile($path.'/'.$matches['path']);
                 exit();
             }

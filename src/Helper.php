@@ -209,12 +209,14 @@ class Helper {
                             if (file_exists($filelistitem['file'])) $originalHash = md5_file($filelistitem['file']);
                             if (file_exists($path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file'])))
                             $destinationHash = md5_file(  $path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file'])  );
-                            if ($originalHash == $destinationHash) {
+
+                            /*if ($originalHash == $destinationHash) {
                                 
                             }else{
+                                */
                                 copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
                                 $copiedFiles[] = $fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file']);
-                            }
+                            //}
 
                             
                             

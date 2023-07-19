@@ -276,6 +276,8 @@ class Helper {
         }
         return [
             'return_code'=>$return_code,
+            'cmd'=>implode(' ',$params),
+            'pwd'=>self::getBuildPath(),
             // 'result'=>($result),
             'data'=>($data)
         ];

@@ -59,6 +59,7 @@ class Ui implements IRoute{
         // set: new headers for cache recognition
         header('Last-Modified: ' . $server_last_modified);
         header('ETag: ' . $server_etag);
+        header('Cache-Control: public');
 
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
         if ($ext=='css'){ header('Content-Type: text/css');}

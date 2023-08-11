@@ -21,9 +21,11 @@ class FileHelper {
                         if (is_dir($path.'/'.$file)){
                             self::listFiles($path.'/'.$file,$files,$replacesubpath);
                         }else{
+                            $dirname = dirname(str_replace($replacesubpath,'',$path.'/'.$file));
+                            if ($dirname=='.') $dirname='';
                             $files[]=[
                                 'file'=>$path.'/'.$file,
-                                'subpath'=>dirname(str_replace($replacesubpath,'',$path.'/'.$file)),
+                                'subpath'=>$dirname,
                                 'prio'=>0
                             ];
                         }

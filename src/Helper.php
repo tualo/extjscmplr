@@ -169,6 +169,17 @@ class Helper {
         return $copiedFiles;
     }
 
+    public static function rglob(string $patterns, $flags = GLOB_NOSORT): array {
+        $result = glob($patterns, $flags);
+        foreach ($result as $item) {
+            if (is_dir($item)) {
+                array_push($result, ...self::rglob($item . '/*', $flags));
+            }
+        }
+    
+        return $result;
+    }
+
     public static function copy($config):array {
         if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
         if (!isset($config['sencha_compiler_sdk'])){ throw new \Exception("sencha_compiler_sdk not defined"); }
@@ -182,6 +193,16 @@ class Helper {
 
         $append_modules=[];
         $files = self::getFiles();
+
+
+
+        $oldFiles = self::rglob(self::getBuildPath().'/classic/*',GLOB_NOSORT);
+        $oldFiles = array_merge($oldFiles,self::rglob(self::getBuildPath().'/modern/*',GLOB_NOSORT));
+        $oldFiles = array_merge($oldFiles,self::rglob(self::getBuildPath().'/both/*',GLOB_NOSORT));
+
+
+        $newFiles = [];
+
         $toolkits = ['classic','modern',''];
         foreach($toolkits as $toolkit){
             $path = implode('/',[
@@ -192,7 +213,7 @@ class Helper {
             ]);
             if (!file_exists( $path )){ mkdir($path,0777,true); }
             
-            FileHelper::delTree($path);
+            // FileHelper::delTree($path);
             foreach($files as $fileItem){
                 
                 if (isset($fileItem['toolkit']) && ($fileItem['toolkit']==$toolkit) ){
@@ -200,6 +221,10 @@ class Helper {
 
                     if (!file_exists( $path.'/'.$fileItem['modul'] )){ mkdir($path.'/'.$fileItem['modul'],0777,true); }
                     foreach($fileItem['files'] as $filelistitem){
+                        if (!isset($filelistitem['file'])){
+                            print_r($fileItem);
+                            exit();
+                        }
                         if (file_exists($filelistitem['file'])){
                             if($filelistitem['subpath']!='')$filelistitem['subpath']='/'.$filelistitem['subpath'];
                             if (!file_exists( $path.'/'.$fileItem['modul'].'/'.$filelistitem['subpath']) ){ mkdir($path.'/'.$fileItem['modul'].$filelistitem['subpath'],0777,true); }
@@ -210,13 +235,14 @@ class Helper {
                             if (file_exists($path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file'])))
                             $destinationHash = md5_file(  $path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file'])  );
 
-                            /*if ($originalHash == $destinationHash) {
+                            $newFiles[] = $path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file']);
+
+                            if ($originalHash == $destinationHash) {
                                 
                             }else{
-                                */
                                 copy( $filelistitem['file'], $path.'/'.$fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file']) );
                                 $copiedFiles[] = $fileItem['modul'].$filelistitem['subpath'].'/'.basename($filelistitem['file']);
-                            //}
+                            }
 
                             
                             
@@ -235,7 +261,13 @@ class Helper {
             'app.json'
         ]),json_encode(AppJson::get(),JSON_PRETTY_PRINT));
 
-
+        $diff = (array_diff($oldFiles,$newFiles));
+        foreach($diff as $diffitem){
+            if (!is_dir($diffitem)){
+                echo "unlink $diffitem\n";
+                unlink($diffitem);
+            }
+        }
         return [$copiedFiles,$append_modules];
     }
 

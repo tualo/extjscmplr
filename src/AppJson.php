@@ -102,7 +102,7 @@ class AppJson {
         "production"=> [
             "output"=> [
                 "appCache"=> [
-                    "enable"=> false,
+                    "enable"=> true,
                     "path"=> "cache.appcache"
                 ]
             ],
@@ -136,7 +136,7 @@ class AppJson {
             "manifest"=> "$"."{build.id}.json",
             "js"=> "$"."{build.id}/app.js",
             "appCache"=> [
-                "enable"=> false
+                "enable"=> true
             ],
             "resources"=> [
                 "path"=> "$"."{build.id}/resources",
@@ -144,7 +144,7 @@ class AppJson {
             ]
         ],
         "cache"=> [
-            "enable"=> false,
+            "enable"=> true,
             "deltas"=> "$"."{build.id}/deltas"
         ],
         "appCache"=> [

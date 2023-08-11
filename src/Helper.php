@@ -264,7 +264,6 @@ class Helper {
         $diff = (array_diff($oldFiles,$newFiles));
         foreach($diff as $diffitem){
             if (!is_dir($diffitem)){
-                echo "unlink $diffitem\n";
                 unlink($diffitem);
             }
         }

@@ -253,9 +253,18 @@ class Helper {
     
 
         }
+        
+        $addRequires = App::configuration('ext-compiler','requires',false);
+        if ($addRequires!==false){
+            $list = explode(',',$addRequires);
+            foreach($list as $item){
+                AppJson::appendElement('requires',trim($item));
+            }
+        }
 
-
+        
         AppJson::append('classpath',$append_modules);
+        // echo json_encode(AppJson::get(),JSON_PRETTY_PRINT); exit();
         file_put_contents(implode('/',[
             self::getBuildPath(),
             'app.json'
@@ -284,7 +293,9 @@ class Helper {
 
         chdir( self::getBuildPath() );
         # exec('export _JAVA_OPTIONS=-Xms2048m -Xmx8192m -Dapple.awt.UIElement=true');
-
+        # exec('export OPENSSL_CONF=/dev/null');
+        # exec('OPENSSL_CONF=/dev/null');
+        
         $params = [$config['sencha_compiler_command']];
         $params[] = 'build';
         if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];

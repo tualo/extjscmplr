@@ -15,9 +15,18 @@ class AppJson {
         return;
     }
 
+    public static function appendElement($key,$value):void{
+        self::$data[$key][]=$value;
+    }
+
     public static function append($key,$value):void{
         if (isset(self::$data[$key])){
-            self::$data[$key]+=$value;
+            /*if (is_array(self::$data[$key])){ 
+                self::$data[$key][]=$value;
+            }else{
+             */   
+                self::$data[$key]+=$value;
+            //}
         }
         return;
     }

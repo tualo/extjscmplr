@@ -14,7 +14,7 @@ class Commandline implements ICommandline{
     public static function setup(Cli $cli){
         $cli->command(self::getCommandName())
             ->description('compile the extjs application')
-            ->opt('client', 'only use this client', false, 'string');
+            ->opt('client', 'only use this client', true, 'string');
     }
     public static function run(Args $args){
 

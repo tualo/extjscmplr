@@ -41,12 +41,16 @@ class Read implements IRoute{
                     $client=Helper::getCurrentClient();
                     $res = Helper::compile($compiler_config);
                     App::result('compile', $res);
+
                     if ($res['return_code']!=0){
                         foreach($res['data'] as $row){
                             if ($row['level']=='[ERR]'){
                                 App::result('msg', $row['note']);
                                 break;
                             }
+                        }
+                        if ($res['return_code']==127){
+                            App::result('msg', 'compiler not found');
                         }
                         App::result('success', false);
                     }else{

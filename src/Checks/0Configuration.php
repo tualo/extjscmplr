@@ -6,7 +6,7 @@ use Tualo\Office\Basic\PostCheck;
 use Tualo\Office\Basic\TualoApplication as App;
 
 
-class Configuration  extends PostCheck {
+class C0onfiguration  extends PostCheck {
     
     public static function test(array $config){
         $clientdb = App::get('clientDB');

@@ -23,6 +23,17 @@ class Configuration  extends PostCheck {
                 PostCheck::formatPrintLn(['green'],"\tsencha vesrion: ".implode(' ',$output));
             }
         }
+        if(($sdk = App::configuration('ext-compiler','sencha_compiler_sdk',false))==false){
+            PostCheck::formatPrintLn(['red'],"\tsdk not defined");
+        }else{
+            if (file_exists($sdk)){
+                PostCheck::formatPrintLn(['green'],"\tsdk found: ".$sdk);
+            }else{
+                PostCheck::formatPrintLn(['red'],"\tsdk not found: ".$sdk);
+            }
+        }
+        
+        
 
     }
 }

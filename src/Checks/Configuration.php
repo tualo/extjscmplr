@@ -6,7 +6,7 @@ use Tualo\Office\Basic\PostCheck;
 use Tualo\Office\Basic\TualoApplication as App;
 
 
-class C0onfiguration  extends PostCheck {
+class Configuration  extends PostCheck {
     
     public static function test(array $config){
         $clientdb = App::get('clientDB');
@@ -20,7 +20,7 @@ class C0onfiguration  extends PostCheck {
             if ($return_var!=0){
                 PostCheck::formatPrintLn(['red'],"\tsencha cmd *$cmd* is not callable ($return_var), try `npm install -g sencha-cmd`");
             }else{
-                PostCheck::formatPrintLn(['green'],"\tsencha vesrion: ".implode(' ',$output));
+                PostCheck::formatPrintLn(['green'],"\tsencha version: ".$output[0]);
             }
         }
         if(($sdk = App::configuration('ext-compiler','sencha_compiler_sdk',false))==false){

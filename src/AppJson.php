@@ -32,6 +32,10 @@ class AppJson {
     }
 
     private static $data = [
+        "debug" =>[ 
+            "hooks"=>[ 
+                '*' => false,
+        ]],
         "name"=> "Tualo",
         "namespace"=> "Tualo",
         "version"=> "1.0.0.0",

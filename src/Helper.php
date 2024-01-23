@@ -262,7 +262,13 @@ class Helper {
             }
         }
 
-        
+        if ((isset($_REQUEST['debug'])) && ($_REQUEST['debug']==1)){
+            AppJson::set('debug',[ 
+                "hooks"=>[ 
+                    '*' => true
+            ]]);
+        }
+
         AppJson::append('classpath',$append_modules);
         // echo json_encode(AppJson::get(),JSON_PRETTY_PRINT); exit();
         file_put_contents(implode('/',[

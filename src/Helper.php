@@ -186,6 +186,7 @@ class Helper {
         if (!isset($config['sencha_compiler_source'])){
             $config['sencha_compiler_source'] = dirname(__DIR__,1).'/compiler_source/Tualo';
         }
+        
         $copiedFiles = self::copySource( $config['sencha_compiler_source'], self::getBuildPath() );
         if (!file_exists( self::getBuildPath().'/ext' )){
             symlink($config['sencha_compiler_sdk'].'', self::getBuildPath().'/ext');

@@ -35,11 +35,15 @@ class Helper {
     public static function extract(){
         $doc = new DOMDocument();
         $doc->loadHTMLFile(Helper::getCachePath().'/index.html');
+        // echo Helper::getCachePath().'/index.html'; exit();
         $elements = $doc->getElementsByTagName('script');
         $index =0;
         if (!is_null($elements)) {
+            // print_r($elements); exit();
             foreach ($elements as $element) {
                 if ($index==0){
+                    $tk = App::configuration('ext-compiler','sencha_compiler_toolkit','classic');
+                    if ($tk!='') $element->textContent = str_replace('Ext.manifest = profile;','Ext.manifest = "'.$tk.'";',$element->textContent);
                     file_put_contents(Helper::getCachePath().'/ext_start.js',$element->textContent);
                 }else if ($index==1){
                     file_put_contents(Helper::getCachePath().'/bootstrap.js',$element->textContent);
@@ -187,7 +191,11 @@ class Helper {
             $config['sencha_compiler_source'] = dirname(__DIR__,1).'/compiler_source/Tualo';
         }
         
+        // echo $config['sencha_compiler_sdk']; exit();
         $copiedFiles = self::copySource( $config['sencha_compiler_source'], self::getBuildPath() );
+        if (file_exists( self::getBuildPath().'/ext' )){
+            unlink(self::getBuildPath().'/ext');
+        }
         if (!file_exists( self::getBuildPath().'/ext' )){
             symlink($config['sencha_compiler_sdk'].'', self::getBuildPath().'/ext');
         }

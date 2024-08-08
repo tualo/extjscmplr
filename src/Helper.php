@@ -307,6 +307,15 @@ class Helper {
 
 
         chdir( self::getBuildPath() );
+
+
+        if ($java_options = App::configuration('ext-compiler','java_options',false)){
+            exec('export _JAVA_OPTIONS="$java_options"');
+        }
+        if ($openssl_conf = App::configuration('ext-compiler','openssl_conf',false)){
+            exec('export OPENSSL_CONF="$openssl_conf"');
+        }
+        
         # exec('export _JAVA_OPTIONS=-Xms2048m -Xmx8192m -Dapple.awt.UIElement=true');
         # exec('export OPENSSL_CONF=/dev/null');
         # exec('OPENSSL_CONF=/dev/null');

@@ -1,5 +1,5 @@
 <?php
-namespace Tualo\Office\Basic;
+namespace Tualo\Office\ExtJSCompiler\Commands;
 use Garden\Cli\Cli;
 use Garden\Cli\Args;
 use Tualo\Office\Basic\ICommandline;

@@ -87,11 +87,14 @@ class Ui implements IRoute{
                 
                 $compiler_config = (App::get('configuration'))['ext-compiler'];
             if (!file_exists($path) || !is_dir($path)){
-                Helper::compile($compiler_config, $client );
+                App::logger('tualo/extjscmplr')->error('not compiled: '.$path);
+                // Helper::compile($compiler_config, $client );
             }
+            /*
             if (!file_exists($path) || !is_dir($path)){
                 throw new \Exception("Version could not be build");
             }
+            */
             if (($matches['path']=='')||($matches['path']=='/')) return; //bsc should do that job // $matches['path']='index.html';
             if (!file_exists($path.'/'.$matches['path'])){
                 // 

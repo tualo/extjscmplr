@@ -7,32 +7,32 @@ use Tualo\Office\ExtJSCompiler\AppJson;
 
 class Helper {
     
-    public static function getBuildPath(){
+    public static function getBuildPath($client='default'){
         $config = App::get('configuration');
         if (!isset($config['ext-compiler'])) throw new \Exception("ext-compiler section not defined");
         $compiler_config = $config['ext-compiler'];
         return implode('/',[
             App::get('basePath'),
             'ext-build',
-            self::getCurrentClient(),
+            self::getCurrentClient($client),
             'build',
             'production',
             'Tualo'
         ]);
     }
 
-    public static function getCachePath(){
+    public static function getCachePath($client='default'){
         $config = App::get('configuration');
         if (!isset($config['ext-compiler'])) throw new \Exception("ext-compiler section not defined");
         $compiler_config = $config['ext-compiler'];
         return implode('/',[
             App::get('basePath'),
             'ext-cache',
-            self::getCurrentClient()
+            self::getCurrentClient($client)
         ]);
     }
 
-    public static function extract(){
+    public static function extract($client='default'){
         $doc = new DOMDocument();
         $doc->loadHTMLFile(Helper::getCachePath().'/index.html');
         // echo Helper::getCachePath().'/index.html'; exit();
@@ -44,17 +44,16 @@ class Helper {
                 if ($index==0){
                     $tk = App::configuration('ext-compiler','sencha_compiler_toolkit','classic');
                     if ($tk!='') $element->textContent = str_replace('Ext.manifest = profile;','Ext.manifest = "'.$tk.'";',$element->textContent);
-                    file_put_contents(Helper::getCachePath().'/ext_start.js',$element->textContent);
+                    file_put_contents(Helper::getCachePath($client).'/ext_start.js',$element->textContent);
                 }else if ($index==1){
-                    file_put_contents(Helper::getCachePath().'/bootstrap.js',$element->textContent);
+                    file_put_contents(Helper::getCachePath($client).'/bootstrap.js',$element->textContent);
                 }
                 $index++;
             }
         }
     }
 
-    public static function getCurrentClient(){
-        $client='default';
+    public static function getCurrentClient($client='default'){
         if (
             isset($_SESSION['tualoapplication']) &&
             isset($_SESSION['tualoapplication']['loggedIn']) &&
@@ -184,7 +183,7 @@ class Helper {
         return $result;
     }
 
-    public static function copy($config):array {
+    public static function copy($config,$client='default'):array {
         if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
         if (!isset($config['sencha_compiler_sdk'])){ throw new \Exception("sencha_compiler_sdk not defined"); }
         if (!isset($config['sencha_compiler_source'])){
@@ -192,12 +191,12 @@ class Helper {
         }
         
         // echo $config['sencha_compiler_sdk']; exit();
-        $copiedFiles = self::copySource( $config['sencha_compiler_source'], self::getBuildPath() );
-        if (file_exists( self::getBuildPath().'/ext' )){
-            unlink(self::getBuildPath().'/ext');
+        $copiedFiles = self::copySource( $config['sencha_compiler_source'], self::getBuildPath($client) );
+        if (file_exists( self::getBuildPath($client).'/ext' )){
+            unlink(self::getBuildPath($client).'/ext');
         }
-        if (!file_exists( self::getBuildPath().'/ext' )){
-            symlink($config['sencha_compiler_sdk'].'', self::getBuildPath().'/ext');
+        if (!file_exists( self::getBuildPath($client).'/ext' )){
+            symlink($config['sencha_compiler_sdk'].'', self::getBuildPath($client).'/ext');
         }
 
         $append_modules=[];
@@ -205,9 +204,9 @@ class Helper {
 
 
 
-        $oldFiles = self::rglob(self::getBuildPath().'/classic/*',GLOB_NOSORT);
-        $oldFiles = array_merge($oldFiles,self::rglob(self::getBuildPath().'/modern/*',GLOB_NOSORT));
-        $oldFiles = array_merge($oldFiles,self::rglob(self::getBuildPath().'/both/*',GLOB_NOSORT));
+        $oldFiles = self::rglob(self::getBuildPath($client).'/classic/*',GLOB_NOSORT);
+        $oldFiles = array_merge($oldFiles,self::rglob(self::getBuildPath($client).'/modern/*',GLOB_NOSORT));
+        $oldFiles = array_merge($oldFiles,self::rglob(self::getBuildPath($client).'/both/*',GLOB_NOSORT));
 
 
         $newFiles = [];
@@ -215,7 +214,7 @@ class Helper {
         $toolkits = ['classic','modern',''];
         foreach($toolkits as $toolkit){
             $path = implode('/',[
-                self::getBuildPath(),
+                self::getBuildPath($client),
                 (($toolkit=='')?'both':$toolkit),
                 'src',
                 'system'
@@ -281,7 +280,7 @@ class Helper {
         AppJson::append('classpath',$append_modules);
         // echo json_encode(AppJson::get(),JSON_PRETTY_PRINT); exit();
         file_put_contents(implode('/',[
-            self::getBuildPath(),
+            self::getBuildPath($client),
             'app.json'
         ]),json_encode(AppJson::get(),JSON_PRETTY_PRINT));
 
@@ -294,7 +293,7 @@ class Helper {
         return [$copiedFiles,$append_modules];
     }
 
-    public static function compile($config) {
+    public static function compile($config,$client='default'){ 
 
 
         if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
@@ -306,7 +305,7 @@ class Helper {
         list($copiedfiles,$append_modules) = self::copy($config);
 
 
-        chdir( self::getBuildPath() );
+        chdir( self::getBuildPath($client) );
 
 
         if ($java_options = App::configuration('ext-compiler','java_options',false)){
@@ -331,19 +330,19 @@ class Helper {
             if (isset($matches['note'])&&isset($matches['level']))
             $data[] = [
                 'index'=>$index++,
-                'note'=>str_replace(self::getBuildPath() ,'.',$matches['note'][0]),
+                'note'=>str_replace(self::getBuildPath($client) ,'.',$matches['note'][0]),
                 'level'=>$matches['level'][0]
             ];
         }
 
         if ($return_code==0){
-            $res = Helper::copySource( Helper::getBuildPath().'/build/production/Tualo' , Helper::getCachePath() );
-            self::extract();
+            $res = Helper::copySource( Helper::getBuildPath($client).'/build/production/Tualo' , Helper::getCachePath($client) );
+            self::extract($client);
         }
         return [
             'return_code'=>$return_code,
             'cmd'=>implode(' ',$params),
-            'pwd'=>self::getBuildPath(),
+            'pwd'=>self::getBuildPath($client),
             // 'result'=>($result),
             'data'=>($data)
         ];

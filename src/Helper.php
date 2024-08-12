@@ -302,7 +302,7 @@ class Helper {
             $config['sencha_compiler_source'] = dirname(__DIR__,1).'/compiler_source/Tualo';
         }
         
-        list($copiedfiles,$append_modules) = self::copy($config);
+        list($copiedfiles,$append_modules) = self::copy($config,$client);
 
 
         chdir( self::getBuildPath($client) );

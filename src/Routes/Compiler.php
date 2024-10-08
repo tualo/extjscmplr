@@ -38,8 +38,10 @@ class Read implements IRoute{
             if (isset((App::get('configuration'))['ext-compiler'])){
                 $compiler_config = (App::get('configuration'))['ext-compiler'];
                 try{
-                    $client=Helper::getCurrentClient();
-                    $res = Helper::compile($compiler_config);
+                    
+
+                    $client=Helper::getCurrentClient( );
+                    $res = Helper::compile($compiler_config,$client);
                     App::result('compile', $res);
 
                     if ($res['return_code']!=0){

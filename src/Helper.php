@@ -34,7 +34,11 @@ class Helper {
 
     public static function extract($client='default'){
         $doc = new DOMDocument();
-        $doc->loadHTMLFile(Helper::getCachePath().'/index.html');
+        
+        // $doc->loadHTMLFile(Helper::getCachePath($client).'/index.html');
+        $doc->loadHTMLFile(Helper::getBuildPath($client).'/build/production/Tualo'.'/index.html');
+        // echo Helper::getBuildPath($client).'/build/production/Tualo'.'/index.html'."*\n"."\n";
+        // echo file_get_contents(Helper::getBuildPath($client).'/build/production/Tualo'.'/index.html')."*\n"."\n"."\n";
         // echo Helper::getCachePath().'/index.html'; exit();
         $elements = $doc->getElementsByTagName('script');
         $index =0;
@@ -45,8 +49,16 @@ class Helper {
                     $tk = App::configuration('ext-compiler','sencha_compiler_toolkit','classic');
                     if ($tk!='') $element->textContent = str_replace('Ext.manifest = profile;','Ext.manifest = "'.$tk.'";',$element->textContent);
                     file_put_contents(Helper::getCachePath($client).'/ext_start.js',$element->textContent);
+                    //echo $element->textContent."*\n"."\n";
                 }else if ($index==1){
-                    file_put_contents(Helper::getCachePath($client).'/bootstrap.js',$element->textContent);
+                    //echo $element->textContent."*\n"."\n";
+                    if (trim($element->textContent)!=''){
+                        file_put_contents(Helper::getCachePath($client).'/bootstrap.js',$element->textContent);
+                    }else{
+                        file_put_contents(
+                            file_get_contents(Helper::getBuildPath($client).'/build/temp/production/Tualo/slicer-temp/bootstrap.js')
+                        );
+                    }
                 }
                 $index++;
             }
@@ -61,6 +73,7 @@ class Helper {
         ){
             $client = $_SESSION['tualoapplication']['client'];
         }
+
         return $client;
     }
 
@@ -304,6 +317,7 @@ class Helper {
         
         list($copiedfiles,$append_modules) = self::copy($config,$client);
 
+        
 
         chdir( self::getBuildPath($client) );
 
@@ -315,7 +329,8 @@ class Helper {
             $params[] = 'OPENSSL_CONF="'.$openssl_conf.'"';
         }
         
-        $params[] = $config['sencha_compiler_command'];
+        $params[] = str_replace('{client}',$client,$config['sencha_compiler_command']);
+
         $params[] = 'build';
         if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
         exec(implode(' ',$params),$result,$return_code);
@@ -333,13 +348,14 @@ class Helper {
 
         if ($return_code==0){
             $res = Helper::copySource( Helper::getBuildPath($client).'/build/production/Tualo' , Helper::getCachePath($client) );
+
             self::extract($client);
         }
         return [
             'return_code'=>$return_code,
             'cmd'=>implode(' ',$params),
             'pwd'=>self::getBuildPath($client),
-            // 'result'=>($result),
+            'result'=>($result),
             'data'=>($data)
         ];
     }

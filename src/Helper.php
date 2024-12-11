@@ -56,6 +56,7 @@ class Helper {
                         file_put_contents(Helper::getCachePath($client).'/bootstrap.js',$element->textContent);
                     }else{
                         file_put_contents(
+                            Helper::getCachePath($client).'/bootstrap.js',
                             file_get_contents(Helper::getBuildPath($client).'/build/temp/production/Tualo/slicer-temp/bootstrap.js')
                         );
                     }

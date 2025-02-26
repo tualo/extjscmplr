@@ -50,7 +50,7 @@ class AppJson
             "font-awesome",
             "ux",
             "charts",
-            // "ext-locale"
+            "ext-locale"
         ],
         "locale" => "de",
         "indexHtmlPath" => "index.html",

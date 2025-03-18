@@ -338,6 +338,7 @@ class Helper
         list($copiedfiles, $append_modules) = self::copy($config, $client);
 
 
+        //        ini_set('memory_limit', '2024M');
 
         chdir(self::getBuildPath($client));
 

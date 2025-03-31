@@ -36,6 +36,14 @@ class AppJson
         return;
     }
 
+    public static function removeBuild($key): void
+    {
+        if (isset(self::$data['builds'][$key])) {
+            unset(self::$data['builds'][$key]);
+        }
+        return;
+    }
+
     private static $data = [
         "debug" => [
             "hooks" => [

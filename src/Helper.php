@@ -309,6 +309,16 @@ class Helper
 
         AppJson::append('classpath', $append_modules);
         // echo json_encode(AppJson::get(),JSON_PRETTY_PRINT); exit();
+
+        if (isset($config['sencha_compiler_toolkit'])) {
+            if (strpos($config['sencha_compiler_toolkit'], 'modern') === false) {
+                AppJson::removeBuild('modern');
+            }
+            if (strpos($config['sencha_compiler_toolkit'], 'classic') === false) {
+                AppJson::removeBuild('classic');
+            }
+        }
+
         file_put_contents(implode('/', [
             self::getBuildPath($client),
             'app.json'
@@ -354,7 +364,9 @@ class Helper
         $params[] = $c;
 
         $params[] = 'build';
-        if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
+        // if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
+
+
         if (isset($config['sencha_pass_path'])) $params[] = $config['sencha_pass_path'];
         exec(implode(' ', $params), $result, $return_code);
         $data = [];

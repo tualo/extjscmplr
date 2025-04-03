@@ -364,7 +364,7 @@ class Helper
         $params[] = $c;
 
         $params[] = 'build';
-        // if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
+        if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
 
 
         if (isset($config['sencha_pass_path'])) $params[] = $config['sencha_pass_path'];

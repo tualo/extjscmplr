@@ -360,14 +360,14 @@ class Helper
             $params[] = 'OPENSSL_CONF="' . $openssl_conf . '"';
         }
 
-        $c = str_replace('{client}', $client, $config['sencha_compiler_command']);
-        $params[] = $c;
+        $params[] = $config['sencha_compiler_command'];
 
         $params[] = 'build';
         if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
 
 
-        if (isset($config['sencha_pass_path'])) $params[] = $config['sencha_pass_path'];
+        // if (isset($config['sencha_pass_path'])) $params[] = $config['sencha_pass_path'];
+
         exec(implode(' ', $params), $result, $return_code);
         $data = [];
         $index = 0;

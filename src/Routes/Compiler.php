@@ -13,6 +13,13 @@ class Read implements IRoute
 
     public static function register()
     {
+
+        BasicRoute::add('/phpinfo', function ($matches) {
+
+            phpinfo();
+            exit();
+        }, ['get', 'post'], false);
+
         BasicRoute::add('/compiler_extract', function ($matches) {
 
             Helper::extract();

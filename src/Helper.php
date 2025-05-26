@@ -359,6 +359,9 @@ class Helper
         if ($openssl_conf = App::configuration('ext-compiler', 'openssl_conf', false)) {
             $params[] = 'OPENSSL_CONF="' . $openssl_conf . '"';
         }
+        if ($java_home = App::configuration('ext-compiler', 'install4j_java_home', false)) {
+            $params[] = 'INSTALL4J_JAVA_HOME="' . $java_home . '"';
+        }
 
         $params[] = $config['sencha_compiler_command'];
 

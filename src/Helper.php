@@ -12,9 +12,7 @@ class Helper
 
     public static function getBuildPath($client = 'default')
     {
-        $config = App::get('configuration');
-        if (!isset($config['ext-compiler'])) throw new \Exception("ext-compiler section not defined");
-        $compiler_config = $config['ext-compiler'];
+
         return implode('/', [
             App::get('basePath'),
             'ext-build',
@@ -209,23 +207,23 @@ class Helper
         return $result;
     }
 
-    public static function copy($config, $client = 'default'): array
+    public static function copy($client = 'default'): array
     {
-        if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
-        if (!isset($config['sencha_compiler_sdk'])) {
-            throw new \Exception("sencha_compiler_sdk not defined");
-        }
-        if (!isset($config['sencha_compiler_source'])) {
-            $config['sencha_compiler_source'] = dirname(__DIR__, 1) . '/compiler_source/Tualo';
+
+        if (App::configuration('ext-compiler', 'sencha_compiler_command', '') == '') throw new \Exception("sencha_compiler_command not defined");
+        if (App::configuration('ext-compiler', 'sencha_compiler_sdk', '') == '') throw new \Exception("sencha_compiler_sdk not defined");
+
+        $sencha_compiler_source = App::configuration('ext-compiler', 'sencha_compiler_source', false);
+        if (!$sencha_compiler_source) {
+            $sencha_compiler_source = dirname(__DIR__, 1) . '/compiler_source/Tualo';
         }
 
-        // echo $config['sencha_compiler_sdk']; exit();
-        $copiedFiles = self::copySource($config['sencha_compiler_source'], self::getBuildPath($client));
+        $copiedFiles = self::copySource($sencha_compiler_source, self::getBuildPath($client));
         if (file_exists(self::getBuildPath($client) . '/ext')) {
             unlink(self::getBuildPath($client) . '/ext');
         }
         if (!file_exists(self::getBuildPath($client) . '/ext')) {
-            symlink($config['sencha_compiler_sdk'] . '', self::getBuildPath($client) . '/ext');
+            symlink(App::configuration('ext-compiler', 'sencha_compiler_sdk', '') . '', self::getBuildPath($client) . '/ext');
         }
 
         $append_modules = [];
@@ -337,15 +335,15 @@ class Helper
     {
 
 
-        if (!isset($config['sencha_compiler_command'])) throw new \Exception("sencha_compiler_command not defined");
-        if (!isset($config['sencha_compiler_sdk'])) {
-            throw new \Exception("sencha_compiler_sdk not defined");
-        }
-        if (!isset($config['sencha_compiler_source'])) {
-            $config['sencha_compiler_source'] = dirname(__DIR__, 1) . '/compiler_source/Tualo';
+        if (App::configuration('ext-compiler', 'sencha_compiler_command', '') == '') throw new \Exception("sencha_compiler_command not defined");
+        if (App::configuration('ext-compiler', 'sencha_compiler_sdk', '') == '') throw new \Exception("sencha_compiler_sdk not defined");
+
+        $sencha_compiler_source = App::configuration('ext-compiler', 'sencha_compiler_source', false);
+        if (!$sencha_compiler_source) {
+            $sencha_compiler_source = dirname(__DIR__, 1) . '/compiler_source/Tualo';
         }
 
-        list($copiedfiles, $append_modules) = self::copy($config, $client);
+        list($copiedfiles, $append_modules) = self::copy($client);
 
 
         //        ini_set('memory_limit', '2024M');
@@ -363,10 +361,10 @@ class Helper
             $params[] = 'INSTALL4J_JAVA_HOME="' . $java_home . '"';
         }
 
-        $params[] = $config['sencha_compiler_command'];
+        $params[] = App::configuration('ext-compiler', 'sencha_compiler_command', '');
 
         $params[] = 'build';
-        if (isset($config['sencha_compiler_toolkit'])) $params[] = $config['sencha_compiler_toolkit'];
+        if (App::configuration('ext-compiler', 'sencha_compiler_toolkit', '') != '') $params[] = App::configuration('ext-compiler', 'sencha_compiler_toolkit', '');
 
 
         // if (isset($config['sencha_pass_path'])) $params[] = $config['sencha_pass_path'];

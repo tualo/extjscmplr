@@ -15,24 +15,23 @@ class Read implements IRoute
     {
 
         BasicRoute::add('/phpinfo', function ($matches) {
-
-            phpinfo();
+            // phpinfo();
             exit();
-        }, ['get', 'post'], false);
+        }, ['get', 'post'], true);
 
         BasicRoute::add('/compiler_extract', function ($matches) {
 
             Helper::extract();
             App::contenttype('application/json');
             App::result('success', true);
-        }, ['get', 'post'], false);
+        }, ['get', 'post'], true);
 
 
         BasicRoute::add('/compiler_files', function ($matches) {
             App::result('files', Helper::getFiles());
             App::result('success', true);
             App::contenttype('application/json');
-        }, ['get', 'post'], false);
+        }, ['get', 'post'], true);
 
 
         BasicRoute::add('/compiler_copy', function ($matches) {
@@ -40,7 +39,7 @@ class Read implements IRoute
             App::result('compile', Helper::copy());
             App::result('success', true);
             App::contenttype('application/json');
-        }, ['get', 'post'], false);
+        }, ['get', 'post'], true);
 
         BasicRoute::add('/compiler', function ($matches) {
             App::contenttype('application/json');
@@ -75,6 +74,6 @@ class Read implements IRoute
                 BasicRoute::$finished = true;
             }
             // }
-        }, ['get', 'post'], false);
+        }, ['get', 'post'], true);
     }
 }

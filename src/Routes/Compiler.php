@@ -15,7 +15,11 @@ class Read implements IRoute
     {
 
         BasicRoute::add('/phpinfo', function ($matches) {
-            // phpinfo();
+            if (App::configuration('compiler', 'phpinfo', false) !== true) {
+                phpinfo();
+                exit();
+            }
+            // 
             exit();
         }, ['get', 'post'], true);
 
@@ -41,9 +45,11 @@ class Read implements IRoute
             App::contenttype('application/json');
         }, ['get', 'post'], true);
 
+
+        $allowed = !App::configuration('compiler', 'allowedExtern', false);
+
         BasicRoute::add('/compiler', function ($matches) {
             App::contenttype('application/json');
-
 
 
             try {
@@ -73,7 +79,6 @@ class Read implements IRoute
                 App::result('msg', $e->getMessage());
                 BasicRoute::$finished = true;
             }
-            // }
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], $allowed);
     }
 }

@@ -13,9 +13,12 @@
         "psr-4": {
             "Tualo\\Office\\ExtJSCompiler\\": "src/"
         },
-        "files": ["src/functions.php"]
+        "files": [
+            "src/functions.php"
+        ]
     },
     "minimum-stability": "dev",
     "require": {
+        "tualo/pug": "*"
     }
 }

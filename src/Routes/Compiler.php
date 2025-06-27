@@ -6,6 +6,7 @@ use DOMDocument;
 use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\Basic\Route as BasicRoute;
 use Tualo\Office\Basic\IRoute;
+use Tualo\Office\PUG\CIDR;
 use Tualo\Office\ExtJSCompiler\Helper;
 
 class Read implements IRoute
@@ -47,6 +48,23 @@ class Read implements IRoute
 
 
         $allowed = !App::configuration('compiler', 'allowedExtern', false);
+
+        if ($allowed === false) {
+            $allowed = false;
+
+            $keys =  json_decode(App::configuration('compiler', 'allowed_clientip_headers', "['HTTP_X_DDOSPROXY', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'REMOTE_ADDR']"), true);
+            if (is_null($keys)) {
+                $keys = ['HTTP_X_DDOSPROXY', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'REMOTE_ADDR'];
+            }
+            if (CIDR::IPisWithinCIDR(
+                CIDR::getIP($keys),
+                explode(' ', App::configuration('compiler', 'allowed_cidrs', '127.0.0.1'))
+            )) {
+                $allowed = true;
+            } else {
+                $allowed = false;
+            }
+        }
 
         BasicRoute::add('/compiler', function ($matches) {
             App::contenttype('application/json');

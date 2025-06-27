@@ -47,23 +47,7 @@ class Read implements IRoute
         }, ['get', 'post'], true);
 
 
-        $needsLogin = boolval(!App::configuration('compiler', 'allowedExtern', false));
 
-        if ($needsLogin == true) {
-
-            $keys =  json_decode(App::configuration('compiler', 'allowed_clientip_headers', "['HTTP_X_DDOSPROXY', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'REMOTE_ADDR']"), true);
-            if (is_null($keys)) {
-                $keys = ['HTTP_X_DDOSPROXY', 'HTTP_X_FORWARDED_FOR', 'HTTP_CLIENT_IP', 'REMOTE_ADDR'];
-            }
-            if (CIDR::IPisWithinCIDR(
-                CIDR::getIP($keys),
-                explode(' ', App::configuration('compiler', 'allowed_cidrs', '127.0.0.1'))
-            )) {
-                $needsLogin = false;
-            } else {
-                $needsLogin = true;
-            }
-        }
 
         BasicRoute::add('/compiler', function ($matches) {
             App::contenttype('application/json');
@@ -96,6 +80,6 @@ class Read implements IRoute
                 App::result('msg', $e->getMessage());
                 BasicRoute::$finished = true;
             }
-        }, ['get', 'post'], $needsLogin);
+        }, ['get', 'post'], App::needsActiveLogin('compiler'));
     }
 }

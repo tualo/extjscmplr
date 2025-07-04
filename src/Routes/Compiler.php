@@ -48,7 +48,8 @@ class Read implements IRoute
 
 
 
-
+        // check needsActiveLogin
+        // filter ip addess by CIDR in the configuration
         BasicRoute::add('/compiler', function ($matches) {
             App::contenttype('application/json');
 

@@ -7,9 +7,11 @@ use Tualo\Office\Basic\Route as BasicRoute;
 use Tualo\Office\Basic\IRoute;
 use Tualo\Office\ExtJSCompiler\Helper;
 
-class Ui implements IRoute{
+class Ui implements IRoute
+{
 
-    public static function readfile($filename, $identifier = "", $strict = false){
+    public static function readfile($filename, $identifier = "", $strict = false)
+    {
         // check: are we still allowed to send headers?
         if (headers_sent()) {
             exit(404);
@@ -22,18 +24,15 @@ class Ui implements IRoute{
         $client_etag =
             !empty($_SERVER['HTTP_IF_NONE_MATCH'])
             ?   trim($_SERVER['HTTP_IF_NONE_MATCH'])
-            :   null
-        ;
+            :   null;
         $client_last_modified =
             !empty($_SERVER['HTTP_IF_MODIFIED_SINCE'])
             ?   trim($_SERVER['HTTP_IF_MODIFIED_SINCE'])
-            :   null
-        ;
+            :   null;
         $client_accept_encoding =
             isset($_SERVER['HTTP_ACCEPT_ENCODING'])
             ?   $_SERVER['HTTP_ACCEPT_ENCODING']
-            :   ''
-        ;
+            :   '';
 
         /**
          * Notes
@@ -62,9 +61,15 @@ class Ui implements IRoute{
         header('Cache-Control: public');
 
         $ext = pathinfo($filename, PATHINFO_EXTENSION);
-        if ($ext=='css'){ header('Content-Type: text/css');}
-        if ($ext=='js'){ header('Content-Type: application/javascript');}
-        if ($ext=='html'){ header('Content-Type: text/html'); }
+        if ($ext == 'css') {
+            header('Content-Type: text/css');
+        }
+        if ($ext == 'js') {
+            header('Content-Type: application/javascript');
+        }
+        if ($ext == 'html') {
+            header('Content-Type: text/html');
+        }
 
         if (
             ($client_last_modified && $client_etag) || $strict
@@ -75,37 +80,38 @@ class Ui implements IRoute{
             exit(304);
         }
 
-       readfile($filename);
+        readfile($filename);
     }
 
 
-    public static function register(){
-        BasicRoute::add('/(?P<path>.*)',function($matches){
-            try{
-                $client=Helper::getCurrentClient();
+    public static function register()
+    {
+        BasicRoute::add('/(?P<path>.*)', function ($matches) {
+            try {
+                $client = Helper::getCurrentClient();
                 $path = Helper::getCachePath();
-                
+
                 $compiler_config = (App::get('configuration'))['ext-compiler'];
-            if (!file_exists($path) || !is_dir($path)){
-                App::logger('tualo/extjscmplr')->error('not compiled: '.$path);
-                // Helper::compile($compiler_config, $client );
-            }
-            /*
+                if (!file_exists($path) || !is_dir($path)) {
+                    App::logger('tualo/extjscmplr')->error('not compiled: ' . $path);
+                    // Helper::compile($compiler_config, $client );
+                }
+                /*
             if (!file_exists($path) || !is_dir($path)){
                 throw new \Exception("Version could not be build");
             }
             */
-            if (($matches['path']=='')||($matches['path']=='/')) return; //bsc should do that job // $matches['path']='index.html';
-            if (!file_exists($path.'/'.$matches['path'])){
-                // 
-            }else{
-                header('Content-Type: '.mime_content_type($path.'/'.$matches['path']));
-                self::readfile($path.'/'.$matches['path']);
-                exit();
+                if (($matches['path'] == '') || ($matches['path'] == '/')) return; //bsc should do that job // $matches['path']='index.html';
+                if (!file_exists($path . '/' . $matches['path'])) {
+                    // 
+                } else {
+                    header('Content-Type: ' . mime_content_type($path . '/' . $matches['path']));
+                    self::readfile($path . '/' . $matches['path']);
+                    exit();
+                }
+            } catch (\Exception $e) {
+                //  echo $e->getMessage();
             }
-        }catch(\Exception $e){
-          //  echo $e->getMessage();
-        }
-        },['get'],false);
+        }, ['get'], false);
     }
 }

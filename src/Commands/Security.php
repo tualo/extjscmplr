@@ -4,12 +4,15 @@ namespace Tualo\Office\ExtJSCompiler\Commands;
 
 use Garden\Cli\Cli;
 use Garden\Cli\Args;
-use Tualo\Office\Basic\PostCheck;
 
+use Tualo\Office\Basic\TualoApplication as App;
+use Tualo\Office\Basic\PostCheck;
+use Tualo\Office\Basic\Path;
 use GuzzleHttp\Client;
+use Tualo\Office\Security\BaseSecurityCommand as BaseSecurityCommand;
 
 if (class_exists('Tualo\Office\Security\SecurityCommandline')) {
-    class SecurityCommandline implements \Tualo\Office\Security\ISecurityCommandline
+    class SecurityCommandline extends BaseSecurityCommand implements \Tualo\Office\Security\ISecurityCommandline
     {
 
         public static function getCommandName(): string
@@ -35,31 +38,11 @@ if (class_exists('Tualo\Office\Security\SecurityCommandline')) {
             PostCheck::formatPrintLn(['blue'], "TESING SECURITY FOR COMPILER");
             PostCheck::formatPrintLn(['blue'], "==========================================================");
 
-            /*
-            // check statuscode for compiler using curl
-            // query only header options
-            $url = 'https://oldenburg.stimmzettel.online'; // . urlencode($clientName);
+            self::checkURIAccess('/composer.json') ? PostCheck::formatPrintLn(['red'], "root composer.json is accessible") : PostCheck::formatPrintLn(['green'], "root composer.json is not accessible");
+            self::checkURIAccess('/composer.lock') ? PostCheck::formatPrintLn(['red'], "root composer.lock is accessible") : PostCheck::formatPrintLn(['green'], "root composer.lock is not accessible");
+            self::checkURIAccess('/vendor/tualo/extcmplr/composer.json') ? PostCheck::formatPrintLn(['red'], "/vendor/tualo/extcmplr/composer.json is accessible") : PostCheck::formatPrintLn(['green'], "/vendor/tualo/extcmplr/composer.json is not accessible");
 
-            try {
-                $client = new Client(
-                    [
-                        'base_uri' =>  $url,
-                        'timeout'  => 1.0,
-                    ]
-                );
-                $response = $client->get('/wm/composer.json', []);
-                $code = $response->getStatusCode(); // 200
-
-                if ($code == 200) {
-                    PostCheck::formatPrintLn(['green'], "Compiler is running and accessible at " . $url);
-                } else {
-                    PostCheck::formatPrintLn(['red'], "Compiler is not accessible at " . $url . " (HTTP Status Code: " . $code . ")");
-                }
-            } catch (\Exception $e) {
-                PostCheck::formatPrintLn(['red'], "Compiler is not accessible at " . $url . " (Exception: " . $e->getMessage() . ")");
-            }*/
             ini_get('display_errors') ? PostCheck::formatPrintLn(['red'], 'Warning: display_errors is set to ON') : PostCheck::formatPrintLn(['green'], 'display_errors is set correctly');
-            // ini_get('error_reporting') & E_ALL ? PostCheck::formatPrintLn(['red'], 'Warning: error_reporting is set to E_ALL') : PostCheck::formatPrintLn(['green'], 'error_reporting is set correctly');
             ini_get('error_reporting') | E_WARNING  | E_ALL | E_DEPRECATED ? PostCheck::formatPrintLn(['yellow'], 'Warning: error_reporting is set incorrectly ') : PostCheck::formatPrintLn(['green'], 'error_reporting is set correctly');
         }
     }

@@ -5,6 +5,7 @@ namespace Tualo\Office\ExtJSCompiler\Routes;
 use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\Basic\Route as BasicRoute;
 use Tualo\Office\Basic\IRoute;
+use Tualo\Office\Basic\RouteSecurityHelper;
 use Tualo\Office\ExtJSCompiler\Helper;
 
 class Ui implements IRoute
@@ -86,32 +87,109 @@ class Ui implements IRoute
 
     public static function register()
     {
-        BasicRoute::add('/(?P<path>.*)', function ($matches) {
-            try {
-                $client = Helper::getCurrentClient();
-                $path = Helper::getCachePath();
 
-                $compiler_config = (App::get('configuration'))['ext-compiler'];
-                if (!file_exists($path) || !is_dir($path)) {
-                    App::logger('tualo/extjscmplr')->error('not compiled: ' . $path);
-                    // Helper::compile($compiler_config, $client );
-                }
-                /*
-            if (!file_exists($path) || !is_dir($path)){
-                throw new \Exception("Version could not be build");
-            }
-            */
-                if (($matches['path'] == '') || ($matches['path'] == '/')) return; //bsc should do that job // $matches['path']='index.html';
-                if (!file_exists($path . '/' . $matches['path'])) {
-                    // 
-                } else {
-                    header('Content-Type: ' . mime_content_type($path . '/' . $matches['path']));
-                    self::readfile($path . '/' . $matches['path']);
-                    exit();
-                }
-            } catch (\Exception $e) {
-                //  echo $e->getMessage();
-            }
+        BasicRoute::add('/', function ($matches) {
+            http_response_code(200);
+            if (($matches['path'] == '') || ($matches['path'] == '/')) return; //bsc should do that job // $matches['path']='index.html';
         }, ['get'], false);
+
+
+        BasicRoute::add('/classic.json', function ($matches) {
+            RouteSecurityHelper::serveSecureStaticFile(
+                '/classic.json',
+                Helper::getCachePath(),
+                ['js', 'css', 'map', 'json', 'ttf', 'woff', 'woff2'],
+                [
+                    'js' => 'application/javascript',
+                    'css' => 'text/css',
+                    'map' => 'application/json',
+                    'json' => 'application/json',
+                    'ttf' => 'font/ttf',
+                    'woff' => 'font/woff',
+                    'woff2' => 'font/woff2'
+                ]
+            );
+        }, ['get'], false, [
+            'errorOnUnexpected' => true,
+            'errorOnInvalid' => true,
+            'fields' => [
+                '_dc' => [
+                    'required' => false,
+                    'type' => 'int',
+                ]
+            ]
+        ]);
+
+
+        BasicRoute::add('/framework.js', function ($matches) {
+            RouteSecurityHelper::serveSecureStaticFile(
+                '/framework.js',
+                Helper::getCachePath(),
+                ['js', 'css', 'map', 'json', 'ttf', 'woff', 'woff2'],
+                [
+                    'js' => 'application/javascript',
+                    'css' => 'text/css',
+                    'map' => 'application/json',
+                    'json' => 'application/json',
+                    'ttf' => 'font/ttf',
+                    'woff' => 'font/woff',
+                    'woff2' => 'font/woff2'
+                ]
+            );
+        }, ['get'], false, [
+            'errorOnUnexpected' => true,
+            'errorOnInvalid' => true,
+            'fields' => [
+                '_dc' => [
+                    'required' => false,
+                    'type' => 'int',
+                ]
+            ]
+        ]);
+
+
+        BasicRoute::add('/(?P<sub>(classic|resources))/(?P<path>.+)', function ($matches) {
+            RouteSecurityHelper::serveSecureStaticFile(
+                $matches['sub'] . '/' . $matches['path'],
+                Helper::getCachePath(),
+                ['js', 'css', 'map', 'json', 'ttf', 'woff', 'woff2'],
+                [
+                    'js' => 'application/javascript',
+                    'css' => 'text/css',
+                    'map' => 'application/json',
+                    'json' => 'application/json',
+                    'ttf' => 'font/ttf',
+                    'woff' => 'font/woff',
+                    'woff2' => 'font/woff2'
+                ]
+            );
+        }, ['get'], false, [
+            'errorOnUnexpected' => true,
+            'errorOnInvalid' => true,
+            'fields' => [
+                '_dc' => [
+                    'required' => false,
+                    'type' => 'int',
+                ]
+            ]
+        ]);
+
+        BasicRoute::add('/ui/(?P<path>.+)', function ($matches) {
+
+            RouteSecurityHelper::serveSecureStaticFile(
+                $matches['path'],
+                Helper::getCachePath(),
+                ['js', 'css', 'map', 'json', 'ttf', 'woff', 'woff2'],
+                [
+                    'js' => 'application/javascript',
+                    'css' => 'text/css',
+                    'map' => 'application/json',
+                    'json' => 'application/json',
+                    'ttf' => 'font/ttf',
+                    'woff' => 'font/woff',
+                    'woff2' => 'font/woff2'
+                ]
+            );
+        });
     }
 }

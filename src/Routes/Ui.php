@@ -152,7 +152,7 @@ class Ui implements IRoute
             RouteSecurityHelper::serveSecureStaticFile(
                 $matches['sub'] . '/' . $matches['path'],
                 Helper::getCachePath(),
-                ['js', 'css', 'map', 'json', 'ttf', 'woff', 'woff2'],
+                ['js', 'css', 'map', 'json', 'ttf', 'woff', 'woff2', 'gif', 'png', 'jpg', 'jpeg'],
                 [
                     'js' => 'application/javascript',
                     'css' => 'text/css',
@@ -160,7 +160,11 @@ class Ui implements IRoute
                     'json' => 'application/json',
                     'ttf' => 'font/ttf',
                     'woff' => 'font/woff',
-                    'woff2' => 'font/woff2'
+                    'woff2' => 'font/woff2',
+                    'gif' => 'image/gif',
+                    'png' => 'image/png',
+                    'jpg' => 'image/jpeg',
+                    'jpeg' => 'image/jpeg'
                 ]
             );
         }, ['get'], false, [

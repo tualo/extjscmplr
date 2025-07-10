@@ -168,7 +168,7 @@ class Ui implements IRoute
                 ]
             );
         }, ['get'], false, [
-            'errorOnUnexpected' => true,
+            'errorOnUnexpected' => false,
             'errorOnInvalid' => true,
             'fields' => [
                 '_dc' => [

@@ -88,10 +88,13 @@ class Ui implements IRoute
     public static function register()
     {
 
+        /*
         BasicRoute::add('/', function ($matches) {
             http_response_code(200);
-            if (($matches['path'] == '') || ($matches['path'] == '/')) return; //bsc should do that job // $matches['path']='index.html';
+
+            // if ((!isset($matches['path'])) || ($matches['path'] == '') || ($matches['path'] == '/')) return; //bsc should do that job // $matches['path']='index.html';
         }, ['get'], false);
+        */
 
 
         BasicRoute::add('/classic.json', function ($matches) {

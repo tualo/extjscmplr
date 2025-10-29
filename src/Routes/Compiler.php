@@ -9,7 +9,7 @@ use Tualo\Office\Basic\IRoute;
 use Tualo\Office\PUG\CIDR;
 use Tualo\Office\ExtJSCompiler\Helper;
 
-class Read implements IRoute
+class Read extends \Tualo\Office\Basic\RouteWrapper
 {
 
     public static function register()

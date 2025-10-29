@@ -8,7 +8,7 @@ use Tualo\Office\Basic\IRoute;
 use Tualo\Office\Basic\RouteSecurityHelper;
 use Tualo\Office\ExtJSCompiler\Helper;
 
-class Ui implements IRoute
+class Ui extends \Tualo\Office\Basic\RouteWrapper
 {
 
     public static function readfile($filename, $identifier = "", $strict = false)

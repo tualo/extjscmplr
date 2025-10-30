@@ -12,6 +12,11 @@ use Tualo\Office\ExtJSCompiler\Helper;
 class Read extends \Tualo\Office\Basic\RouteWrapper
 {
 
+    public static function scope(): string
+    {
+        return 'extjs.compiler';
+    }
+
     public static function register()
     {
 
@@ -22,21 +27,21 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
             }
             // 
             exit();
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], true, [], self::scope());
 
         BasicRoute::add('/compiler_extract', function ($matches) {
 
             Helper::extract();
             App::contenttype('application/json');
             App::result('success', true);
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], true, [], self::scope());
 
 
         BasicRoute::add('/compiler_files', function ($matches) {
             App::result('files', Helper::getFiles());
             App::result('success', true);
             App::contenttype('application/json');
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], true, [], self::scope());
 
 
         BasicRoute::add('/compiler_copy', function ($matches) {
@@ -44,7 +49,7 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
             App::result('compile', Helper::copy());
             App::result('success', true);
             App::contenttype('application/json');
-        }, ['get', 'post'], true);
+        }, ['get', 'post'], true, [], self::scope());
 
 
 
@@ -81,6 +86,6 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
                 BasicRoute::$finished = true;
             }
-        }, ['get', 'post'], App::needsActiveLogin('compiler'));
+        }, ['get', 'post'], App::needsActiveLogin('compiler'), [], self::scope());
     }
 }

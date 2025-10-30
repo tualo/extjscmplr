@@ -16,7 +16,6 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
     {
         return 'extjs.compiler';
     }
-
     public static function register()
     {
 

@@ -379,11 +379,12 @@ class Helper
         foreach ($result as $row) {
             preg_match('/(?P<level>\[(\w+)\])\s(?P<note>.+)/', $row, $matches, PREG_OFFSET_CAPTURE);
             if (isset($matches['note']) && isset($matches['level']))
-                $data[] = [
-                    'index' => $index++,
-                    'note' => str_replace(self::getBuildPath($client), '.', $matches['note'][0]),
-                    'level' => $matches['level'][0]
-                ];
+                if (strpos($matches['note'][0], '/') === 0) continue;
+            $data[] = [
+                'index' => $index++,
+                'note' => str_replace(self::getBuildPath($client), '.', $matches['note'][0]),
+                'level' => $matches['level'][0]
+            ];
         }
 
         if ($return_code == 0) {
@@ -393,8 +394,8 @@ class Helper
         }
         return [
             'return_code' => $return_code,
-            'cmd' => implode(' ', $params),
-            'pwd' => self::getBuildPath($client),
+            // 'cmd' => implode(' ', $params),
+            // 'pwd' => self::getBuildPath($client),
             'result' => ($result),
             'data' => ($data)
         ];

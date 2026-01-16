@@ -40,7 +40,14 @@ class Helper
         $doc = new DOMDocument();
 
         // $doc->loadHTMLFile(Helper::getCachePath($client).'/index.html');
-        $doc->loadHTMLFile(Helper::getBuildPath($client) . '/build/production/Tualo' . '/index.html');
+        $filename = Helper::getBuildPath($client) . '/build/production/Tualo' . '/index.html';
+        if (!file_exists($filename)) {
+            $filename = Helper::getBuildPath($client) . '/index.html';
+            if (!file_exists($filename)) {
+                throw new \Exception("Compiled index.html not found: " . Helper::getBuildPath($client) . '/build/production/Tualo' . '/index.html or ' . $filename);
+            }
+        }
+        $doc->loadHTMLFile($filename);
         // echo Helper::getBuildPath($client).'/build/production/Tualo'.'/index.html'."*\n"."\n";
         // echo file_get_contents(Helper::getBuildPath($client).'/build/production/Tualo'.'/index.html')."*\n"."\n"."\n";
         // echo Helper::getCachePath().'/index.html'; exit();

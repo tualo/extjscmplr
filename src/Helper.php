@@ -42,10 +42,7 @@ class Helper
         // $doc->loadHTMLFile(Helper::getCachePath($client).'/index.html');
         $filename = Helper::getBuildPath($client) . '/build/production/Tualo' . '/index.html';
         if (!file_exists($filename)) {
-            $filename = Helper::getBuildPath($client) . '/index.html';
-            if (!file_exists($filename)) {
-                throw new \Exception("Compiled index.html not found: " . Helper::getBuildPath($client) . '/build/production/Tualo' . '/index.html or ' . $filename);
-            }
+            throw new \Exception("Compiled index.html not found: " . Helper::getBuildPath($client) . '/build/production/Tualo' . '/index.html');
         }
         $doc->loadHTMLFile($filename);
         // echo Helper::getBuildPath($client).'/build/production/Tualo'.'/index.html'."*\n"."\n";

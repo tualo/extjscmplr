@@ -377,11 +377,16 @@ class Helper
         $data = [];
         $index = 0;
         foreach ($result as $row) {
+            $index++;
             preg_match('/(?P<level>\[(\w+)\])\s(?P<note>.+)/', $row, $matches, PREG_OFFSET_CAPTURE);
-            if (isset($matches['note']) && isset($matches['level']))
-                if (strpos($matches['note'][0], '/') === 0) continue;
+            if (!isset($matches['level'][0])) {
+                continue;
+            }
+            if (!isset($matches['note'][0])) {
+                continue;
+            }
             $data[] = [
-                'index' => $index++,
+                'index' => $index,
                 'note' => str_replace(self::getBuildPath($client), '.', $matches['note'][0]),
                 'level' => $matches['level'][0]
             ];

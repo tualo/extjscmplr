@@ -181,6 +181,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
 
 
         BasicRoute::add('/(?P<sub>(classic|resources))/(?P<path>.+)', function ($matches) {
+            /*
             RouteSecurityHelper::serveSecureStaticFile(
                 $matches['sub'] . '/' . $matches['path'],
                 Helper::getCachePath(),
@@ -199,6 +200,46 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
                     'jpeg' => 'image/jpeg'
                 ]
             );
+            */
+            $allowed = [
+                'js' => 'application/javascript',
+                'css' => 'text/css',
+                'map' => 'application/json',
+                'json' => 'application/json',
+                'ttf' => 'font/ttf',
+                'woff' => 'font/woff',
+                'woff2' => 'font/woff2',
+                'gif' => 'image/gif',
+                'png' => 'image/png',
+                'jpg' => 'image/jpeg',
+                'jpeg' => 'image/jpeg'
+            ];
+            $requestedFile = $matches['sub'] . '/' . $matches['path'];
+            $baseDir = Helper::getCachePath();
+
+            // 1. Path Traversal Schutz
+            if (!RouteSecurityHelper::isSecurePath($requestedFile)) {
+                http_response_code(404);
+                return false;
+            }
+
+            // 2. Sichere Pfad-Auflösung
+            $safePath = RouteSecurityHelper::resolveSafePath($requestedFile, $baseDir);
+            if (!$safePath) {
+                http_response_code(404);
+                return false;
+            }
+
+            SystemFile::deliverFile($requestedFile, function () use ($allowed, $requestedFile) {
+                $filePath = Path::join(Helper::getCachePath(), $requestedFile);
+                $pathInfo = pathinfo($filePath);
+                $extension = strtolower($pathInfo['extension'] ?? '');
+                if (!file_exists($filePath)) {
+                    return new SystemFileCallbackResult(false);
+                }
+                return new SystemFileCallbackResult(true, file_get_contents($filePath), $allowed[$extension] ?? 'application/octet-stream');
+            });
+            return;
         }, ['get'], false, [
             'errorOnUnexpected' => false,
             'errorOnInvalid' => true,
@@ -236,8 +277,8 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
                 return false;
             }
 
-            SystemFile::deliverFile($requestedFile, function () use ($matches, $allowed) {
-                $filePath = Path::join(Helper::getCachePath(), $matches['path']);
+            SystemFile::deliverFile($requestedFile, function () use ($allowed, $requestedFile) {
+                $filePath = Path::join(Helper::getCachePath(), $requestedFile);
                 $pathInfo = pathinfo($filePath);
                 $extension = strtolower($pathInfo['extension'] ?? '');
                 if (!file_exists($filePath)) {

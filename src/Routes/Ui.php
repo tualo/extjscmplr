@@ -7,6 +7,9 @@ use Tualo\Office\Basic\Route as BasicRoute;
 use Tualo\Office\Basic\IRoute;
 use Tualo\Office\Basic\RouteSecurityHelper;
 use Tualo\Office\ExtJSCompiler\Helper;
+use Tualo\Office\Basic\Path;
+use Tualo\Office\SystemFiles\SystemFile;
+use Tualo\Office\SystemFiles\SystemFileCallbackResult;
 
 class Ui extends \Tualo\Office\Basic\RouteWrapper
 {
@@ -98,6 +101,31 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
 
 
         BasicRoute::add('/classic.json', function ($matches) {
+            $requestedFile = '/classic.json';
+            $baseDir = Helper::getCachePath();
+
+            // 1. Path Traversal Schutz
+            if (!RouteSecurityHelper::isSecurePath($requestedFile)) {
+                http_response_code(404);
+                return false;
+            }
+
+            // 2. Sichere Pfad-Auflösung
+            $safePath = RouteSecurityHelper::resolveSafePath($requestedFile, $baseDir);
+            if (!$safePath) {
+                http_response_code(404);
+                return false;
+            }
+
+            SystemFile::deliverFile('classic.json', function () {
+                $filePath = Path::join(Helper::getCachePath(), 'classic.json');
+                if (!file_exists($filePath)) {
+                    return new SystemFileCallbackResult(false);
+                }
+                return new SystemFileCallbackResult(true, file_get_contents($filePath), 'application/json');
+            });
+            return;
+            /*
             RouteSecurityHelper::serveSecureStaticFile(
                 '/classic.json',
                 Helper::getCachePath(),
@@ -112,6 +140,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
                     'woff2' => 'font/woff2'
                 ]
             );
+            */
         }, ['get'], false, [
             'errorOnUnexpected' => true,
             'errorOnInvalid' => true,
@@ -182,7 +211,42 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
         ]);
 
         BasicRoute::add('/ui/(?P<path>.+)', function ($matches) {
+            $allowed = [
+                'js' => 'application/javascript',
+                'css' => 'text/css',
+                'map' => 'application/json',
+                'json' => 'application/json',
+                'ttf' => 'font/ttf',
+                'woff' => 'font/woff',
+                'woff2' => 'font/woff2'
+            ];
+            $requestedFile = $matches['path'];
+            $baseDir = Helper::getCachePath();
 
+            // 1. Path Traversal Schutz
+            if (!RouteSecurityHelper::isSecurePath($requestedFile)) {
+                http_response_code(404);
+                return false;
+            }
+
+            // 2. Sichere Pfad-Auflösung
+            $safePath = RouteSecurityHelper::resolveSafePath($requestedFile, $baseDir);
+            if (!$safePath) {
+                http_response_code(404);
+                return false;
+            }
+
+            SystemFile::deliverFile($requestedFile, function () use ($matches, $allowed) {
+                $filePath = Path::join(Helper::getCachePath(), $matches['path']);
+                $pathInfo = pathinfo($filePath);
+                $extension = strtolower($pathInfo['extension'] ?? '');
+                if (!file_exists($filePath)) {
+                    return new SystemFileCallbackResult(false);
+                }
+                return new SystemFileCallbackResult(true, file_get_contents($filePath), $allowed[$extension] ?? 'application/octet-stream');
+            });
+            return;
+            /*
             RouteSecurityHelper::serveSecureStaticFile(
                 $matches['path'],
                 Helper::getCachePath(),
@@ -197,6 +261,16 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
                     'woff2' => 'font/woff2'
                 ]
             );
-        });
+            */
+        }, ['get'], false, [
+            'errorOnUnexpected' => false,
+            'errorOnInvalid' => true,
+            'fields' => [
+                '_dc' => [
+                    'required' => false,
+                    'type' => 'int',
+                ]
+            ]
+        ]);
     }
 }

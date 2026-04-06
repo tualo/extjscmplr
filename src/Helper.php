@@ -6,6 +6,7 @@ use DOMDocument;
 use Tualo\Office\Basic\TualoApplication as App;
 use Tualo\Office\ExtJSCompiler\FileHelper;
 use Tualo\Office\ExtJSCompiler\AppJson;
+use Tualo\Office\SystemFiles\SystemFile;
 
 class Helper
 {
@@ -396,6 +397,8 @@ class Helper
             $res = Helper::copySource(Helper::getBuildPath($client) . '/build/production/Tualo', Helper::getCachePath($client));
 
             self::extract($client);
+
+            SystemFile::removeSystemFileByPackage('extjscmplr');
         }
         return [
             'return_code' => $return_code,

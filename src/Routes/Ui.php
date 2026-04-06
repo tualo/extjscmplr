@@ -123,7 +123,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
                     return new SystemFileCallbackResult(false);
                 }
                 return new SystemFileCallbackResult(true, file_get_contents($filePath), 'application/json');
-            });
+            }, 'extjscmplr');
             return;
             /*
             RouteSecurityHelper::serveSecureStaticFile(
@@ -238,7 +238,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
                     return new SystemFileCallbackResult(false);
                 }
                 return new SystemFileCallbackResult(true, file_get_contents($filePath), $allowed[$extension] ?? 'application/octet-stream');
-            });
+            }, 'extjscmplr');
             return;
         }, ['get'], false, [
             'errorOnUnexpected' => false,
@@ -285,7 +285,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
                     return new SystemFileCallbackResult(false);
                 }
                 return new SystemFileCallbackResult(true, file_get_contents($filePath), $allowed[$extension] ?? 'application/octet-stream');
-            });
+            }, 'extjscmplr');
             return;
             /*
             RouteSecurityHelper::serveSecureStaticFile(

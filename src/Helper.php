@@ -28,7 +28,7 @@ class Helper
     {
         $config = App::get('configuration');
         if (!isset($config['ext-compiler'])) throw new \Exception("ext-compiler section not defined");
-        $compiler_config = $config['ext-compiler'];
+        // $compiler_config = $config['ext-compiler'];
         return implode('/', [
             App::get('basePath'),
             'ext-cache',
@@ -87,6 +87,7 @@ class Helper
 
         return $client;
     }
+
 
     public static function getFiles()
     {
@@ -313,11 +314,11 @@ class Helper
         AppJson::append('classpath', $append_modules);
         // echo json_encode(AppJson::get(),JSON_PRETTY_PRINT); exit();
 
-        if (isset($config['sencha_compiler_toolkit'])) {
-            if (strpos($config['sencha_compiler_toolkit'], 'modern') === false) {
+        if (App::configuration('ext-compiler', 'sencha_compiler_toolkit', false) !== false) {
+            if (strpos(App::configuration('ext-compiler', 'sencha_compiler_toolkit'), 'modern') === false) {
                 AppJson::removeBuild('modern');
             }
-            if (strpos($config['sencha_compiler_toolkit'], 'classic') === false) {
+            if (strpos(App::configuration('ext-compiler', 'sencha_compiler_toolkit'), 'classic') === false) {
                 AppJson::removeBuild('classic');
             }
         }

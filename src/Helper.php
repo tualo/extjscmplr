@@ -153,49 +153,26 @@ class Helper
     public static function copySource($from, $to): array
     {
         $copiedFiles = [];
-        //if ( file_exists( $to )) FileHelper::delTree($to);
-        if (!file_exists($to)) {
+        if (!is_dir($to)) {
             mkdir($to, 0777, true);
         }
         $files = [];
-        FileHelper::listFiles($from, $files);
-        //App::logger('compiler')->info('my message');
+        // ext is the SDK symlink with tens of thousands of files that are never copied
+        FileHelper::listFiles($from, $files, '', ['ext']);
+
+        $knownDirs = [];
         foreach ($files as $file) {
-            if ($file['subpath'] != '') $file['subpath'] = '/' . $file['subpath'];
-
-
-            if (
-                ($file['subpath'] == '/ext') ||
-                (strpos($file['subpath'], '/ext/') === 0)
-            ) {
-            } else {
-                if (!file_exists($to . $file['subpath'])) {
-                    mkdir($to . $file['subpath'], 0777, true);
+            $subpath = $file['subpath'] === '' ? '' : '/' . $file['subpath'];
+            $dir = $to . $subpath;
+            if (!isset($knownDirs[$dir])) {
+                if (!is_dir($dir)) {
+                    mkdir($dir, 0777, true);
                 }
+                $knownDirs[$dir] = true;
+            }
 
-                // copy( $file['file'],$to.$file['subpath'].'/'.basename($file['file'] ));
-
-                $originalHash = ' ';
-                $destinationHash = '';
-                if (file_exists($file['file'])) $originalHash = md5_file($file['file']);
-                if (file_exists($to . $file['subpath'] . '/' . basename($file['file'])))
-                    $destinationHash = md5_file($to . $file['subpath'] . '/' . basename($file['file']));
-                if ($originalHash == $destinationHash) {
-                } else {
-                    copy($file['file'], $to . $file['subpath'] . '/' . basename($file['file']));
-                    $copiedFiles[] = $file['subpath'] . '/' . basename($file['file']);
-                }
-
-                if (basename($file['file']) == 'app.js') {
-                    file_put_contents(
-                        $to . $file['subpath'] . '/' . basename($file['file']),
-                        str_replace(
-                            "mainView: 'Tualo.view.main.Main'",
-                            "mainView: 'Tualo.view.main.Main'",
-                            file_get_contents($to . $file['subpath'] . '/' . basename($file['file']))
-                        )
-                    );
-                }
+            if (FileHelper::syncFile($file['file'], $dir . '/' . basename($file['file']))) {
+                $copiedFiles[] = $subpath . '/' . basename($file['file']);
             }
         }
         return $copiedFiles;
@@ -276,17 +253,10 @@ class Helper
                                 mkdir($path . '/' . $fileItem['modul'] . $filelistitem['subpath'], 0777, true);
                             }
 
-                            $originalHash = ' ';
-                            $destinationHash = '';
-                            if (file_exists($filelistitem['file'])) $originalHash = md5_file($filelistitem['file']);
-                            if (file_exists($path . '/' . $fileItem['modul'] . $filelistitem['subpath'] . '/' . basename($filelistitem['file'])))
-                                $destinationHash = md5_file($path . '/' . $fileItem['modul'] . $filelistitem['subpath'] . '/' . basename($filelistitem['file']));
+                            $target = $path . '/' . $fileItem['modul'] . $filelistitem['subpath'] . '/' . basename($filelistitem['file']);
+                            $newFiles[] = $target;
 
-                            $newFiles[] = $path . '/' . $fileItem['modul'] . $filelistitem['subpath'] . '/' . basename($filelistitem['file']);
-
-                            if ($originalHash == $destinationHash) {
-                            } else {
-                                copy($filelistitem['file'], $path . '/' . $fileItem['modul'] . $filelistitem['subpath'] . '/' . basename($filelistitem['file']));
+                            if (FileHelper::syncFile($filelistitem['file'], $target)) {
                                 $copiedFiles[] = $fileItem['modul'] . $filelistitem['subpath'] . '/' . basename($filelistitem['file']);
                             }
                         }

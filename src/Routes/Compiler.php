@@ -17,7 +17,7 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
         $scope = 'extjs.compiler';
         if (is_null(App::get('session')) || !App::get('session')->isLoggedIn()) {
             // wenn aufruf von localhost, dann basic
-            if (!isset($_SERVER['REMOTE_ADDR']) || ($_SERVER['REMOTE_ADDR'] != '127.0.0.1')) {
+            if (!isset($_SERVER['REMOTE_ADDR']) || ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')) {
                 $scope = 'basic';
             }
         }

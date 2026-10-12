@@ -27,7 +27,7 @@ class Commandline implements ICommandline
     {
 
         if (isset((App::get('configuration'))['ext-compiler'])) {
-            $compiler_config = ((string)App::get('configuration'))['ext-compiler'];
+            $compiler_config = ((array)App::get('configuration'))['ext-compiler'];
             try {
                 $client = $args->getOpt('client', 'default');
                 $res = Helper::compile($compiler_config, $client);

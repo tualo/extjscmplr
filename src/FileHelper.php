@@ -2,6 +2,8 @@
 
 namespace Tualo\Office\ExtJSCompiler;
 
+use Tualo\Office\Basic\TualoApplication as App;
+
 class FileHelper
 {
 
@@ -56,6 +58,7 @@ class FileHelper
             return false;
         }
         copy($src, $dst);
+        // App::logger('FileHelper')->info("Syncing file $src to $dst");
         touch($dst, $srcTime);
         return true;
     }

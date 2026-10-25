@@ -62,7 +62,7 @@ Ext.define('TualoLoader', {
                         tablename: item.table_name.toLowerCase()
                     },
                     tablename: item.table_name.toLowerCase(),
-                    statefulFilters: true,
+                    // statefulFilters: true,
                     // groupField: [{groupfield}],
                     alias: 'store.' + this.aliasPrefix + '' + item.table_name.toLowerCase() + '_store',
                     model: this.getName('model', item.table_name),

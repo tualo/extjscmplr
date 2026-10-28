@@ -15,6 +15,9 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
     public static function scope(): string
     {
         $scope = 'extjs.compiler';
+        if ((App::get('maintanceMode') == 'on'))
+            $scope = 'basic';
+
         if (is_null(App::get('session')) || !App::get('session')->isLoggedIn()) {
             // wenn aufruf von localhost, dann basic
             if (!isset($_SERVER['REMOTE_ADDR']) || ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')) {
@@ -92,6 +95,6 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
                 App::result('msg', $e->getMessage());
                 BasicRoute::$finished = true;
             }
-        }, ['get', 'post'], App::needsActiveLogin('compiler'), [], self::scope());
+        }, ['get', 'post'], !(App::get('maintanceMode') == 'on')  || App::needsActiveLogin('compiler'), [], self::scope());
     }
 }

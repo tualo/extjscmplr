@@ -5,6 +5,7 @@ namespace Tualo\Office\ExtJSCompiler\Middlewares;
 use Tualo\Office\Basic\TualoApplication;
 use Tualo\Office\Basic\IMiddleware;
 use Tualo\Office\ExtJSCompiler\AppJson;
+use Tualo\Office\ExtJSCompiler\Helper;
 
 class Middleware implements IMiddleware
 {
@@ -17,6 +18,14 @@ class Middleware implements IMiddleware
                     'data-app' => AppJson::get()['id'],
                     'id' => 'microloader'
                 ]);
+
+                $requestedFile = 'bootstrap.js';
+                $baseDir = Helper::getCachePath();
+
+                if (!file_exists($baseDir . '/' . $requestedFile)) {
+                    TualoApplication::set('message', 'Bootstrap file not found, please compile the ExtJS application first <a href="./compiler" target="_blank">here</a>');
+                    TualoApplication::set('maintanceMode', 'on');
+                }
             } catch (\Exception $e) {
                 TualoApplication::set('maintanceMode', 'on');
                 TualoApplication::addError($e->getMessage());

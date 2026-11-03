@@ -218,6 +218,9 @@ class AppJson
                 ]
             ]
         ],
+        "properties" => [
+            "skip.slice" => 1
+        ],
         "ignore" => [
             "(^|/)CVS(/?$|/.*?$)"
         ],

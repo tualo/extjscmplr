@@ -15,8 +15,19 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
     public static function scope(): string
     {
         $scope = 'extjs.compiler';
+
+
+        $requestedFile = 'bootstrap.js';
+        $baseDir = Helper::getCachePath();
+
+        if (!file_exists($baseDir . '/' . $requestedFile)) {
+            App::set('maintanceMode', 'on');
+        }
+
+
         if ((App::get('maintanceMode') == 'on'))
             $scope = 'basic';
+
 
         if (is_null(App::get('session')) || !App::get('session')->isLoggedIn()) {
             // wenn aufruf von localhost, dann basic

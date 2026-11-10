@@ -97,6 +97,11 @@ class AppJson
             [
                 "path" => "app.js",
                 "bundle" => true
+            ],
+            [
+                "path" => ".ds/cached",
+                "remote" => true,
+                "bundle" => false
             ]
         ],
         "classic" => [

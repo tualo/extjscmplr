@@ -5,7 +5,6 @@
     "apps": [
         ""
     ],
-
     /**
      * An object containing key value pair framework descriptors.
      *
@@ -29,18 +28,16 @@
      */
     "frameworks": {
         "ext": {
-            "path":"ext",
-            "version":"7.6.0.41"
+            "path": "ext",
+            "version": "8.0.0.43"
         }
     },
-
     /**
      * This is the folder for build outputs in the workspace.
      */
     "build": {
         "dir": "${workspace.dir}/build"
     },
-
     /**
      * These configs determine where packages are generated and extracted to (when downloaded).
      */
@@ -50,7 +47,6 @@
          * If a comma-separated string is used as value the first path will be used as the path to generate new packages.
          */
         "dir": "${workspace.dir}/packages/local,${workspace.dir}/packages",
-
         /**
          * This folder contains all extracted (remote) packages.
          */

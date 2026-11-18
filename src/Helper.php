@@ -343,33 +343,58 @@ class Helper
         if (App::configuration('ext-compiler', 'sencha_compiler_toolkit', '') != '') $params[] = App::configuration('ext-compiler', 'sencha_compiler_toolkit', '');
 
 
-        // if (isset($config['sencha_pass_path'])) $params[] = $config['sencha_pass_path'];
-
-        exec(implode(' ', $params), $result, $return_code);
+        $result = [];
+        $return_code = 0;
         $data = [];
         $index = 0;
-        foreach ($result as $row) {
-            $index++;
-            preg_match('/(?P<level>\[(\w+)\])\s(?P<note>.+)/', $row, $matches, PREG_OFFSET_CAPTURE);
-            if (!isset($matches['level'][0])) {
-                continue;
-            }
-            if (!isset($matches['note'][0])) {
-                continue;
-            }
-            $data[] = [
-                'index' => $index,
-                'note' => str_replace(self::getBuildPath($client), '.', $matches['note'][0]),
-                'level' => $matches['level'][0]
+
+        if (App::configuration('ext-compiler', 'use_tualo_compiler', '') != '') {
+            /*
+extjsc build [-app <directory>] [-out <directory>] [-toolkit classic|modern] [-platform desktop|phone|tablet] [-mode development|production] [-normalize-let-const] [-minify] [-source-map]
+            */
+            $params = [
+                App::configuration('ext-compiler', 'use_tualo_compiler', 'ls'),
+                'build',
+                '-app',
+                self::getBuildPath($client),
+                '-out',
+                App::get('tempPath') . '/ext-build'
             ];
-        }
+            echo implode(' ', $params);
 
-        if ($return_code == 0) {
-            $res = Helper::copySource(Helper::getBuildPath($client) . '/build/production/Tualo', Helper::getCachePath($client));
+            exec(implode(' ', $params), $result, $return_code);
+            $data = $result;
+            $index = 0;
+        } else {
 
-            self::extract($client);
+            // if (isset($config['sencha_pass_path'])) $params[] = $config['sencha_pass_path'];
 
-            SystemFile::removeSystemFileByPackage('extjscmplr');
+            exec(implode(' ', $params), $result, $return_code);
+            $data = [];
+            $index = 0;
+            foreach ($result as $row) {
+                $index++;
+                preg_match('/(?P<level>\[(\w+)\])\s(?P<note>.+)/', $row, $matches, PREG_OFFSET_CAPTURE);
+                if (!isset($matches['level'][0])) {
+                    continue;
+                }
+                if (!isset($matches['note'][0])) {
+                    continue;
+                }
+                $data[] = [
+                    'index' => $index,
+                    'note' => str_replace(self::getBuildPath($client), '.', $matches['note'][0]),
+                    'level' => $matches['level'][0]
+                ];
+            }
+
+            if ($return_code == 0) {
+                $res = Helper::copySource(Helper::getBuildPath($client) . '/build/production/Tualo', Helper::getCachePath($client));
+
+                self::extract($client);
+
+                SystemFile::removeSystemFileByPackage('extjscmplr');
+            }
         }
         return [
             'return_code' => $return_code,

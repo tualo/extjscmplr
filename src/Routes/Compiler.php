@@ -35,6 +35,10 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
                 $scope = 'basic';
             }
         }
+
+        if (!App::needsActiveLogin('compiler'))
+            $scope = 'basic';
+
         return $scope;
     }
     public static function register()

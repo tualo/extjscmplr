@@ -12,8 +12,6 @@ Ext.define('Tualo.view.main.MainController', {
     },
 
     onConfirm: function (choice) {
-        if (choice === 'yes') {
-            //
-        }
+        console.log('onConfirm choice:', choice);
     }
 });

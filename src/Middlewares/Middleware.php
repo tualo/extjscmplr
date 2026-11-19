@@ -27,6 +27,7 @@ class Middleware implements IMiddleware
                     TualoApplication::set('maintanceMode', 'on');
                 }
             } catch (\Exception $e) {
+                TualoApplication::set('message', 'Das Sytsem ist derzeit nicht erreichbar (ExtJSCompiler)');
                 TualoApplication::set('maintanceMode', 'on');
                 TualoApplication::addError($e->getMessage());
             }

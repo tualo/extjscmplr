@@ -20,7 +20,11 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
         $requestedFile = 'bootstrap.js';
         $baseDir = Helper::getCachePath();
 
+
+
         if (!file_exists($baseDir . '/' . $requestedFile)) {
+            App::logger('Compiler')->warning('Bitte default compilieren', [Helper::getCachePath()]);
+            App::set('message', 'Bootstrap file not found, please compile the ExtJS application first <a href="./compiler" target="_blank">here</a>');
             App::set('maintanceMode', 'on');
         }
 
@@ -29,12 +33,14 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
             $scope = 'basic';
 
 
+        /*
         if (is_null(App::get('session')) || !App::get('session')->isLoggedIn()) {
             // wenn aufruf von localhost, dann basic
             if (!isset($_SERVER['REMOTE_ADDR']) || ($_SERVER['REMOTE_ADDR'] == '127.0.0.1')) {
                 $scope = 'basic';
             }
         }
+        */
 
         if (!App::needsActiveLogin('compiler'))
             $scope = 'basic';

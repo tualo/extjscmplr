@@ -14,18 +14,26 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
 
     public static function scope(): string
     {
-        $scope = 'extjs.compiler';
+        $scope = 'basic';
 
 
-        $requestedFile = 'bootstrap.js';
-        $baseDir = Helper::getCachePath();
+        $baseDir = Helper::getCachePath(Helper::getCurrentClient());
 
 
 
-        if (!file_exists($baseDir . '/' . $requestedFile)) {
-            App::logger('Compiler')->warning('Bitte default compilieren', [Helper::getCachePath()]);
-            App::set('message', 'Bootstrap file not found, please compile the ExtJS application first <a href="./compiler" target="_blank">here</a>');
-            App::set('maintanceMode', 'on');
+        if (App::configuration('ext-compiler', 'tualojs', 0) == 1) {
+            if (!file_exists($baseDir . '/app.js')) {
+                App::logger('Compiler')->warning('Bitte default compilieren', [Helper::getCachePath(Helper::getCurrentClient())]);
+                App::set('message', $baseDir . '/app.js' . ' Bootstrap file not found, please compile the ExtJS application first <a href="./compiler" target="_blank">here</a>');
+                App::set('maintanceMode', 'on');
+            }
+        } else {
+            $requestedFile = 'bootstrap.js';
+            if (!file_exists($baseDir . '/' . $requestedFile)) {
+                App::logger('Compiler')->warning('Bitte default compilieren', [Helper::getCachePath(Helper::getCurrentClient())]);
+                App::set('message', 'Bootstrap file not found, please compile the ExtJS application first <a href="./compiler" target="_blank">here</a>');
+                App::set('maintanceMode', 'on');
+            }
         }
 
 
@@ -61,7 +69,7 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
 
         BasicRoute::add('/compiler_extract', function ($matches) {
 
-            Helper::extract();
+            Helper::extract(Helper::getCurrentClient());
             App::contenttype('application/json');
             App::result('success', true);
         }, ['get', 'post'], true, [], self::scope());
@@ -76,7 +84,7 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
 
         BasicRoute::add('/compiler_copy', function ($matches) {
 
-            App::result('compile', Helper::copy());
+            App::result('compile', Helper::copySource(Helper::getCurrentClient(), Helper::getCachePath(Helper::getCurrentClient())));
             App::result('success', true);
             App::contenttype('application/json');
         }, ['get', 'post'], true, [], self::scope());
@@ -91,6 +99,7 @@ class Read extends \Tualo\Office\Basic\RouteWrapper
 
             try {
 
+                $res = Helper::compile('default');
 
                 $client = Helper::getCurrentClient();
 

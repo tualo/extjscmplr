@@ -11,20 +11,20 @@ use Tualo\Office\SystemFiles\SystemFile;
 class Helper
 {
 
-    public static function getBuildPath($client = 'default')
+    public static function getBuildPath(string $client): string
     {
 
         return implode('/', [
             App::get('basePath'),
             'ext-build',
-            self::getCurrentClient($client),
+            $client,
             'build',
             'production',
             'Tualo'
         ]);
     }
 
-    public static function getCachePath($client = 'default')
+    public static function getCachePath(string $client): string
     {
         $config = App::get('configuration');
         if (!isset($config['ext-compiler'])) throw new \Exception("ext-compiler section not defined");
@@ -32,11 +32,11 @@ class Helper
         return implode('/', [
             App::get('basePath'),
             'ext-cache',
-            self::getCurrentClient($client)
+            $client
         ]);
     }
 
-    public static function extract($client = 'default')
+    public static function extract(string $client)
     {
         $doc = new DOMDocument();
 
@@ -75,9 +75,10 @@ class Helper
         }
     }
 
-    public static function getCurrentClient($client = 'default')
+    public static function getCurrentClient(string $client = 'default'): string
     {
         if (
+            (!isset($client) || $client === '') &&
             isset($_SESSION['tualoapplication']) &&
             isset($_SESSION['tualoapplication']['loggedIn']) &&
             $_SESSION['tualoapplication']['loggedIn'] === true
@@ -307,7 +308,74 @@ class Helper
         return [$copiedFiles, $append_modules];
     }
 
-    public static function compile($config, $client = 'default')
+    public static function compile($client = 'default')
+    {
+        if (App::configuration('ext-compiler', 'tualojs', 0) == 1) return self::compileTualo($client);
+        return self::compileSencha($client);
+    }
+
+    public static function compileTualo($client = 'default')
+    {
+        $return_code = 0;
+        $result = [];
+        $data = [];
+
+        list($copiedfiles, $append_modules) = self::copy($client);
+        App::result('buildPath',  self::getBuildPath($client));
+        App::result('cachePath',  self::getCachePath($client));
+
+        $params = [
+            App::configuration('ext-compiler', 'use_tualo_compiler', '/usr/local/bin/tualojs'),
+            'build',
+            '-toolkit',
+            'classic',
+            '-mode',
+            'production',
+            '-source-map',
+            '-include-extjs',
+            '-app',
+            self::getBuildPath($client),
+            '-out',
+            self::getCachePath($client),
+            '-minify',
+            '-json'
+        ];
+        $error_file = tempnam(sys_get_temp_dir(), 'extjscmplr-');
+        if ($error_file === false) throw new \RuntimeException('Could not create temporary compiler error log');
+
+        try {
+
+            $res = exec(implode(' ', $params) . ' 2> ' . escapeshellarg($error_file), $result, $return_code);
+            $error_output = file_get_contents($error_file);
+            if ($error_output === false) throw new \RuntimeException('Could not read temporary compiler error log');
+            $error_output = trim($error_output);
+        } finally {
+            unlink($error_file);
+        }
+
+        if ($return_code !== 0) {
+            App::logger('Compiler')->error('tualojs exited with code ' . $return_code . ': ' . $error_output, ['return_code' => $return_code, 'error_output' => $error_output]);
+        } elseif ($error_output !== '') {
+            App::logger('Compiler')->warning($error_output);
+        }
+
+        if ($return_code === 0) {
+            $data = json_decode(implode("\n", $result), true);
+            if (json_last_error() !== JSON_ERROR_NONE) {
+                App::logger('Compiler')->error('Failed to decode compiler JSON output: ' . json_last_error_msg(), ['json_last_error' => json_last_error()]);
+            }
+        }
+        return [
+            'res' => $res,
+            'return_code' => $return_code,
+            'result' => '',
+            'data' => ($data),
+            // 'copied_files' => ($copiedfiles),
+            // 'append_modules' => ($append_modules)
+        ];
+    }
+
+    public static function compileSencha($client = 'default')
     {
 
 

@@ -27,10 +27,10 @@ class Commandline implements ICommandline
     {
 
         if (isset((App::get('configuration'))['ext-compiler'])) {
-            $compiler_config = ((array)App::get('configuration'))['ext-compiler'];
+
             try {
                 $client = $args->getOpt('client', 'default');
-                $res = Helper::compile($compiler_config, $client);
+                $res = Helper::compile($client);
                 if ($res['return_code'] != 0) {
                     foreach ($res['data'] as $row) {
                         if ($row['level'] == '[ERR]') {

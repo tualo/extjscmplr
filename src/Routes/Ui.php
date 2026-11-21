@@ -102,7 +102,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
 
         BasicRoute::add('/classic.json', function ($matches) {
             $requestedFile = '/classic.json';
-            $baseDir = Helper::getCachePath();
+            $baseDir = Helper::getCachePath(Helper::getCurrentClient());
 
             // 1. Path Traversal Schutz
             if (!RouteSecurityHelper::isSecurePath($requestedFile)) {
@@ -118,7 +118,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
             }
 
             SystemFile::deliverFile('classic.json', function () {
-                $filePath = Path::join(Helper::getCachePath(), 'classic.json');
+                $filePath = Path::join(Helper::getCachePath(Helper::getCurrentClient()), 'classic.json');
                 if (!file_exists($filePath)) {
                     return new SystemFileCallbackResult(false);
                 }
@@ -128,7 +128,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
             /*
             RouteSecurityHelper::serveSecureStaticFile(
                 '/classic.json',
-                Helper::getCachePath(),
+                Helper::getCachePath(Helper::getCurrentClient()),
                 ['js', 'css', 'map', 'json', 'ttf', 'woff', 'woff2'],
                 [
                     'js' => 'application/javascript',
@@ -156,7 +156,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
         BasicRoute::add('/framework.js', function ($matches) {
             RouteSecurityHelper::serveSecureStaticFile(
                 '/framework.js',
-                Helper::getCachePath(),
+                Helper::getCachePath(Helper::getCurrentClient()),
                 ['js', 'css', 'map', 'json', 'ttf', 'woff', 'woff2'],
                 [
                     'js' => 'application/javascript',
@@ -184,7 +184,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
             /*
             RouteSecurityHelper::serveSecureStaticFile(
                 $matches['sub'] . '/' . $matches['path'],
-                Helper::getCachePath(),
+                Helper::getCachePath(Helper::getCurrentClient()),
                 ['js', 'css', 'map', 'json', 'ttf', 'woff', 'woff2', 'gif', 'png', 'jpg', 'jpeg'],
                 [
                     'js' => 'application/javascript',
@@ -215,7 +215,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
                 'jpeg' => 'image/jpeg'
             ];
             $requestedFile = $matches['sub'] . '/' . $matches['path'];
-            $baseDir = Helper::getCachePath();
+            $baseDir = Helper::getCachePath(Helper::getCurrentClient());
 
             // 1. Path Traversal Schutz
             if (!RouteSecurityHelper::isSecurePath($requestedFile)) {
@@ -231,7 +231,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
             }
 
             SystemFile::deliverFile($requestedFile, function () use ($allowed, $requestedFile) {
-                $filePath = Path::join(Helper::getCachePath(), $requestedFile);
+                $filePath = Path::join(Helper::getCachePath(Helper::getCurrentClient()), $requestedFile);
                 $pathInfo = pathinfo($filePath);
                 $extension = strtolower($pathInfo['extension'] ?? '');
                 if (!file_exists($filePath)) {
@@ -262,7 +262,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
                 'woff2' => 'font/woff2'
             ];
             $requestedFile = $matches['path'];
-            $baseDir = Helper::getCachePath();
+            $baseDir = Helper::getCachePath(Helper::getCurrentClient());
 
             // 1. Path Traversal Schutz
             if (!RouteSecurityHelper::isSecurePath($requestedFile)) {
@@ -278,7 +278,7 @@ class Ui extends \Tualo\Office\Basic\RouteWrapper
             }
 
             SystemFile::deliverFile($requestedFile, function () use ($allowed, $requestedFile) {
-                $filePath = Path::join(Helper::getCachePath(), $requestedFile);
+                $filePath = Path::join(Helper::getCachePath(Helper::getCurrentClient()), $requestedFile);
                 $pathInfo = pathinfo($filePath);
                 $extension = strtolower($pathInfo['extension'] ?? '');
                 if (!file_exists($filePath)) {
